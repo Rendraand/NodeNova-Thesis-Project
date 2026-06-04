@@ -1,0 +1,308 @@
+[
+  {
+    "id": "tr-01",
+    "topic": "Binary Tree",
+    "level": "Basic",
+    "category": "binary-tree",
+    "sub_category": "tree-clicker",
+    "description": "Kenali anatomi pohon dengan mengidentifikasi Leaf Node.",
+    "question": "Klik semua node yang termasuk ke dalam kategori Leaf Node (tidak memiliki child) pada pohon di bawah ini!",
+    "initial_layout": {
+      "nodes": [
+        {
+          "id": "node-A",
+          "label": "E",
+          "initial_x": 200,
+          "initial_y": 30
+        },
+        {
+          "id": "node-B",
+          "label": "F",
+          "initial_x": 150,
+          "initial_y": 110
+        },
+        {
+          "id": "node-C",
+          "label": "G",
+          "initial_x": 250,
+          "initial_y": 110
+        },
+        {
+          "id": "node-D",
+          "label": "H",
+          "initial_x": 100,
+          "initial_y": 190
+        },
+        {
+          "id": "node-E",
+          "label": "K",
+          "initial_x": 300,
+          "initial_y": 190
+        }
+      ],
+      "edges": [
+        {
+          "from": "node-A",
+          "to": "node-B"
+        },
+        {
+          "from": "node-A",
+          "to": "node-C"
+        },
+        {
+          "from": "node-B",
+          "to": "node-D"
+        },
+        {
+          "from": "node-C",
+          "to": "node-E"
+        }
+      ]
+    },
+    "validation_rules": {
+      "selection_mode": "multiple",
+      "correct_selected_ids": [
+        "node-D",
+        "node-E"
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "root_selected",
+        "ccbh": "Wah, kamu ada memilih Node E yang itu adalah Root (Akar utama) dan dia punya anak (Node F & G). Ingat, Leaf itu harus jomblo alias nggak punya anak sama sekali!"
+      },
+      {
+        "condition": "incomplete_leaves",
+        "ccbh": "Logikamu sudah benar untuk salah satu node! Tapi coba periksa lagi, masih ada satu node lagi yang tidak memiliki anak di cabang lainnya."
+      }
+    ],
+    "manual_hint": "Lihatlah node yang berada di posisi paling ujung bawah hierarki, di mana tidak ada lagi garis panah yang keluar dari tubuhnya."
+  },
+  {
+    "id": "tr-02",
+    "topic": "Binary Tree",
+    "level": "Intermediate",
+    "category": "binary-tree",
+    "sub_category": "tree-sequence",
+    "description": "Pelajari urutan kunjungan data menggunakan metode Pre-Order Traversal.",
+    "question": "Urutkan kunjungan node di bawah ini berdasarkan aturan Pre-Order Traversal (Root -> Kiri -> Kanan)!",
+    "initial_layout": {
+      "nodes": [
+        {
+          "id": "node-A",
+          "label": "A",
+          "initial_x": 340,
+          "initial_y": 30
+        },
+        {
+          "id": "node-B",
+          "label": "B",
+          "initial_x": 230,
+          "initial_y": 140
+        },
+        {
+          "id": "node-C",
+          "label": "C",
+          "initial_x": 450,
+          "initial_y": 140
+        },
+        {
+          "id": "node-D",
+          "label": "D",
+          "initial_x": 180,
+          "initial_y": 230
+        },
+        {
+          "id": "node-E",
+          "label": "E",
+          "initial_x": 500,
+          "initial_y": 230
+        }
+      ],
+      "edges": [
+        {
+          "from": "node-A",
+          "to": "node-B"
+        },
+        {
+          "from": "node-A",
+          "to": "node-C"
+        },
+        {
+          "from": "node-B",
+          "to": "node-D"
+        },
+        {
+          "from": "node-C",
+          "to": "node-E"
+        }
+      ]
+    },
+    "validation_rules": {
+      "selection_mode": "sequence",
+      "correct_sequence_ids": [
+        "node-A",
+        "node-B",
+        "node-D",
+        "node-C",
+        "node-E"
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "started_from_bottom",
+        "ccbh": "Eits! Jangan mulai dari bawah. Kunci dari Pre-Order adalah cetak Root (paling atas) terlebih dahulu sebelum kamu melangkah ke anak-anaknya!"
+      },
+      {
+        "condition": "skipped_left_subtree",
+        "ccbh": "Hampir tepat! Tapi ingat, selesaikan dulu seluruh sub-tree bagian Kiri sampai mentok (Node D), baru kamu boleh menengok ke sub-tree bagian Kanan (Node C)."
+      }
+    ],
+    "manual_hint": "Bayangkan kamu adalah masinis yang berjalan dari atas. Sentuh induknya (A), turun ke kiri temui anak (B), habiskan ujung kiri (D), baru kembali naik dan seberangi area kanan (C lalu E)."
+  },
+  {
+    "id": "tr-03",
+    "topic": "Binary Tree",
+    "level": "Intermediate",
+    "category": "binary-tree",
+    "sub_category": "tree-sequence",
+    "description": "Pelajari urutan kunjungan data menggunakan metode In-Order Traversal.",
+    "question": "Urutkan kunjungan node di bawah ini berdasarkan aturan In-Order Traversal (Kiri -> Root -> Kanan)!",
+    "initial_layout": {
+      "nodes": [
+        {
+          "id": "node-A",
+          "label": "60",
+          "initial_x": 300,
+          "initial_y": 50
+        },
+        {
+          "id": "node-B",
+          "label": "36",
+          "initial_x": 200,
+          "initial_y": 120
+        },
+        {
+          "id": "node-C",
+          "label": "72",
+          "initial_x": 400,
+          "initial_y": 120
+        },
+        {
+          "id": "node-D",
+          "label": "14",
+          "initial_x": 130,
+          "initial_y": 200
+        },
+        {
+          "id": "node-E",
+          "label": "104",
+          "initial_x": 470,
+          "initial_y": 200
+        }
+      ],
+      "edges": [
+        {
+          "from": "node-A",
+          "to": "node-B"
+        },
+        {
+          "from": "node-A",
+          "to": "node-C"
+        },
+        {
+          "from": "node-B",
+          "to": "node-D"
+        },
+        {
+          "from": "node-C",
+          "to": "node-E"
+        }
+      ]
+    },
+    "validation_rules": {
+      "selection_mode": "sequence",
+      "correct_sequence_ids": [
+        "node-D",
+        "node-B",
+        "node-A",
+        "node-C",
+        "node-E"
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "started_from_root",
+        "ccbh": "Eits! Jangan langsung tebas dari atas. Dalam In-Order, kamu harus berjalan turun dulu ke cabang paling kiri bawah (ujung daun) sebelum boleh mencetak induknya."
+      },
+      {
+        "condition": "skipped_parent",
+        "ccbh": "Aduh, melompati induk terdekat nih! Setelah menyelesaikan ujung kiri (Node 14), kamu harus naik satu tingkat dulu ke induknya (Node 36), baru setelah itu naik ke Root utama (Node 60)."
+      }
+    ],
+    "manual_hint": "Bayangkan kamu membaca dari kiri ke kanan secara horizontal. Urutannya selalu: Habiskan paling kiri (14), naik ke atasnya, sampai ke Root, baru ke sub-tree kanan dan seterusnya."
+  },
+  {
+    "id": "tr-04",
+    "topic": "Binary Tree",
+    "level": "Intermediate",
+    "category": "binary-tree",
+    "sub_category": "tree-click-options",
+    "description": "Pahami karakteristik penyusunan nilai pada properti Binary Search Tree.",
+    "question": "Pohon di bawah ini adalah Binary Search Tree (BST) dengan Root bernilai 50. Pilih pasangan angka yang tepat untuk mengisi cabang Kiri dan Kanan!",
+    "initial_layout": {
+      "nodes": [
+        {
+          "id": "node-parent",
+          "label": "50",
+          "initial_x": 300,
+          "initial_y": 100
+        },
+        {
+          "id": "node-hole-left",
+          "label": "[ ? ]",
+          "initial_x": 180,
+          "initial_y": 200
+        },
+        {
+          "id": "node-hole-right",
+          "label": "[ ? ]",
+          "initial_x": 420,
+          "initial_y": 200
+        }
+      ],
+      "edges": [
+        {
+          "from": "node-parent",
+          "to": "node-hole-left"
+        },
+        {
+          "from": "node-parent",
+          "to": "node-hole-right"
+        }
+      ]
+    },
+    "validation_rules": {
+      "selection_mode": "click-option",
+      "correct_answer": "35 & 70"
+    },
+    "options": [
+      {
+        "id": "opt1",
+        "content": "35 & 70",
+        "isCorrect": true
+      },
+      {
+        "id": "opt2",
+        "content": "60 & 25",
+        "ccbh": "Aduh, angkanya tertukar posisinya! Ingat rumus mutlak BST: Cabang kiri itu tempatnya angka yang lebih kecil dari 50, dan cabang kanan untuk yang lebih besar."
+      },
+      {
+        "id": "opt3",
+        "content": "20 & 40",
+        "ccbh": "Periksa angka luaran sebelah kananmu! Angka 40 memang lebih kecil dari 50 (cocok untuk kiri), tapi untuk cabang kanan, angkanya wajib lebih besar dari 50."
+      }
+    ],
+    "manual_hint": "Rumus mutlak BST: Nilai anak Kiri harus < Induk, dan nilai anak Kanan harus > Induk. Cari opsi paket angka yang mematuhi hukum matematika ini."
+  }
+]

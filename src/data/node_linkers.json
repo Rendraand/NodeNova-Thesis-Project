@@ -1,0 +1,233 @@
+[
+  {
+    "id": "nl-01",
+    "topic": "Singly Linked List",
+    "level": "Basic",
+    "category": "node-linker",
+    "description": "Pahami dasar cara menambahkan node di posisi paling depan (Insert Front).",
+    "question": "Node X ingin masuk sebagai elemen paling depan. Hubungkan pointer dan geser penanda ke posisi yang tepat!",
+    "initial_layout": {
+      "layout_type": "sll",
+      "nodes": [
+        {
+          "id": "node-A",
+          "label": "Node A",
+          "initial_x": 300,
+          "initial_y": 30,
+          "draggable": true
+        },
+        {
+          "id": "node-B",
+          "label": "Node B",
+          "initial_x": 500,
+          "initial_y": 30,
+          "draggable": true
+        },
+        {
+          "id": "node-X",
+          "label": "Node X",
+          "initial_x": 100,
+          "initial_y": 100,
+          "draggable": true
+        }
+      ],
+      "pointers": [
+        {
+          "id": "p-1",
+          "from": "node-A",
+          "to": "node-B"
+        }
+      ],
+      "labels": [
+        {
+          "id": "lbl-head",
+          "text": "head",
+          "attached_to": "node-A"
+        }
+      ],
+      "has_trash": false
+    },
+    "validation_rules": {
+      "required_pointers": [
+        {
+          "from": "node-X",
+          "to": "node-A"
+        },
+        {
+          "from": "node-A",
+          "to": "node-B"
+        }
+      ],
+      "required_labels": [
+        {
+          "label_id": "lbl-head",
+          "must_attach_to": "node-X"
+        }
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "pointer_missing",
+        "ccbh": "Untuk menambahkan node baru ke paling depan, kita perlu sambungkan dulu pointer *node baru* ke posisi *head* awal. Dan pastiin gak ada pointer yang terputus antara node."
+      },
+      {
+        "condition": "incorrect_label_position",
+        "ccbh": "Pointer-nya sudah bener nih! Kamu tinggal pindahin label *head* ke posisi paling depan."
+      }
+    ],
+    "manual_hint": "Ingat, gerbong baru harus menggandeng gerbong lama terlebih dahulu sebelum kepala masinis (head) pindah mengomandoi gerbong baru tersebut."
+  },
+  {
+    "id": "nl-02",
+    "topic": "Stack",
+    "level": "Basic",
+    "category": "node-linker",
+    "description": "Hapus elemen teratas dari tumpukan data menggunakan prinsip LIFO.",
+    "question": "Keluarkan elemen yang sudah selesai diproses dari dalam Stack. Pastikan kamu mengambil elemen yang benar sesuai prinsip LIFO!",
+    "initial_layout": {
+      "layout_type": "stack",
+      "nodes": [
+        {
+          "id": "node-1",
+          "label": "Node 1"
+        },
+        {
+          "id": "node-2",
+          "label": "Node 2"
+        },
+        {
+          "id": "node-3",
+          "label": "Node 3"
+        }
+      ],
+      "pointers": [],
+      "labels": [
+        {
+          "id": "lbl-top",
+          "text": "top",
+          "attached_to": "node-3"
+        }
+      ],
+      "has_trash": true
+    },
+    "validation_rules": {
+      "deleted_nodes": [
+        "node-3"
+      ],
+      "required_labels": [
+        {
+          "label_id": "lbl-top",
+          "must_attach_to": "node-2"
+        }
+      ],
+      "required_nodes": [
+        "node-1",
+        "node-2"
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "node_still_exist",
+        "ccbh": "Stop! Ingat prinsip Stack: LIFO (Last-In, First-Out). Kamu cuma bisa mengambil atau menghapus elemen yang berada di tumpukan paling atas (top)."
+      },
+      {
+        "condition": "wrong_node_deleted",
+        "ccbh": "Ingat! misi kita hanya satu elemen teratas, jadi elemen lain tidak perlu di hapus. Dan kamu hanya tinggal memindahkan labelnya."
+      },
+      {
+        "condition": "incorrect_label_position",
+        "ccbh": "Node 3 berhasil dihapus! Tapi tunggu, posisi label *top* sekarang jadi melayang menunjuk tempat kosong. Yuk, geser label *top* ke elemen yang sekarang menjadi tumpukan paling atas."
+      }
+    ],
+    "manual_hint": "Bayangkan kamu sedang mengambil piring dari tumpukan piring kotor. Kamu pasti mengambil piring yang paling atas dulu, kan? Setelah itu, piring di bawahnya otomatis menjadi tumpukan teratas yang baru."
+  },
+  {
+    "id": "nl-03",
+    "topic": "Singly Linked List",
+    "level": "Intermediate",
+    "category": "node-linker",
+    "description": "Putus hubungan sebuah node di tengah list dan sambungkan node sebelum ke node sesudahnya.",
+    "question": "Node B sudah tidak diperlukan lagi dan harus dihapus. Hubungkan pointer dari Node A langsung melompati Node B menuju Node C, lalu buang Node B!",
+    "initial_layout": {
+      "layout_type": "sll",
+      "nodes": [
+        {
+          "id": "node-A",
+          "label": "Node A",
+          "initial_x": 100,
+          "initial_y": 20,
+          "has_null": false,
+          "draggable": false
+        },
+        {
+          "id": "node-B",
+          "label": "Node B",
+          "initial_x": 320,
+          "initial_y": 20,
+          "has_null": false,
+          "draggable": true
+        },
+        {
+          "id": "node-C",
+          "label": "Node C",
+          "initial_x": 540,
+          "initial_y": 20,
+          "has_null": true,
+          "draggable": true
+        }
+      ],
+      "pointers": [
+        {
+          "id": "p-1",
+          "from": "node-A",
+          "to": "node-B"
+        },
+        {
+          "id": "p-2",
+          "from": "node-B",
+          "to": "node-C"
+        }
+      ],
+      "labels": [
+        {
+          "id": "lbl-head",
+          "text": "head",
+          "attached_to": "node-A"
+        }
+      ],
+      "has_trash": true
+    },
+    "validation_rules": {
+      "deleted_nodes": [
+        "node-B"
+      ],
+      "required_pointers": [
+        {
+          "from": "node-A",
+          "to": "node-C"
+        }
+      ],
+      "required_labels": [
+        {
+          "label_id": "lbl-head",
+          "must_attach_to": "node-A"
+        }
+      ]
+    },
+    "cases_ccbh": [
+      {
+        "condition": "pointer_missing",
+        "ccbh": "Waduh! Node B sudah kamu hapus, tapi Node A jadi kebingungan karena panahnya menunjuk ke alamat memori yang sudah hilang. Sambungkan dulu panah Node A langsung ke Node C."
+      },
+      {
+        "condition": "node_still_exist",
+        "ccbh": "Setelah mengubah pointer Node A, jangan lupa untuk menghapus Node B terlebih dahulu supaya *'memori'* lebih bersih."
+      },
+      {
+        "condition": "incorrect_label_position",
+        "ccbh": "Ingat, misi kita fokus kita hanya memutus node di tengah-tengah. Maka label head sudah tidak perlu di ubah lagi dari posisi awalnya (paling depan)."
+      }
+    ],
+    "manual_hint": "Agar gerbong B bisa dilepas tanpa membuat gerbong C tertinggal, gerbong A harus menjulurkan rantai pointernya langsung ke gerbong C terlebih dahulu."
+  }
+]

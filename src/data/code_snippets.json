@@ -1,0 +1,118 @@
+[
+  {
+    "id": "ds-01",
+    "topic": "Singly Linked List",
+    "level": "Basic",
+    "category": "code-snippet",
+    "description": "Pahami dasar cara menghubungkan node data ke satu arah yang sama.",
+    "question": "Lengkapi definisi Node ini agar bisa terhubung ke node tetangganya.",
+    "code_template": "struct Node {\n  int data;\n  Node* [blank];\n};",
+    "correct_answer": "next",
+    "options": [
+      {
+        "id": "opt1",
+        "content": "next",
+        "isCorrect": true
+      },
+      {
+        "id": "opt2",
+        "content": "prev",
+        "ccbh": "Eits, ini *Singly* Linked List, jadi jalannya cuma bisa maju ke depan! Kalau *prev* itu biasanya dipakai di Doubly Linked List."
+      },
+      {
+        "id": "opt3",
+        "content": "head",
+        "ccbh": "Wah kalau *head* itu biasanya pointer luar buat nandain awal mula list, coba pikirkan istilah untuk menunjuk ke *sebelahmu*."
+      }
+    ],
+    "option_type": "single-drag",
+    "manual_hint": "Coba bayangkan orang yang berdiri tepat di belakang kamu dalam sebuah antrean biasanya disebut apa."
+  },
+  {
+    "id": "ds-02",
+    "topic": "Stack",
+    "level": "Basic",
+    "category": "code-snippet",
+    "description": "Kuasai prinsip LIFO (Last-In, First-Out) dengan mengelola tumpukan data.",
+    "question": "Operasi apa yang digunakan untuk menambahkan elemen baru ke tumpukan paling atas?",
+    "code_template": "void addNewElement(int val) {\n  myStack.[blank](val);\n}",
+    "correct_answer": "push",
+    "options": [
+      {
+        "id": "opt1",
+        "content": "push",
+        "isCorrect": true
+      },
+      {
+        "id": "opt2",
+        "content": "enqueue",
+        "ccbh": "Waduh, tertukar nih! *enqueue* itu dipakai buat Queue (antrean), kalau Stack biasanya memakai istilah lain untuk menambah ke *tumpukan*."
+      },
+      {
+        "id": "opt3",
+        "content": "insert",
+        "ccbh": "Secara bahasa artinya mirip, tapi dalam istilah teknis Struktur Data, fungsi standar untuk memasukkan data ke Stack itu disebut *push*."
+      }
+    ],
+    "option_type": "single-drag",
+    "manual_hint": "Bayangkan kamu sedang menumpuk piring kotor. Kamu *mendorong* piring baru ke bagian atas tumpukan, kan?."
+  },
+  {
+    "id": "ds-03",
+    "topic": "Queue",
+    "level": "Intermediate",
+    "category": "code-snippet",
+    "description": "Pahami bagaimana sistem FIFO (First-In, First-Out) mengatur aliran data.",
+    "question": "Di dalam struktur Queue, di sebelah mana proses penghapusan (removal) elemen terjadi?",
+    "code_template": "int removeElement() {\n  return myQueue.[blank]();\n}",
+    "correct_answer": "front",
+    "options": [
+      {
+        "id": "opt1",
+        "content": "front",
+        "isCorrect": true
+      },
+      {
+        "id": "opt2",
+        "content": "rear",
+        "ccbh": "Rear (atau belakang) itu tempat kita *masukin* data baru (enqueue). Coba ingat-ingat lagi, kalau di antrean nyata, orang yang keluar duluan yang di depan atau belakang?"
+      },
+      {
+        "id": "opt3",
+        "content": "top",
+        "ccbh": "Wah, 'top' itu istilah yang khusus dipakai buat Stack (Tumpukan), bukan buat Queue."
+      }
+    ],
+    "option_type": "single-drag",
+    "manual_hint": "Di antrean bioskop, orang yang berada di posisi paling depan yang akan dilayani dan keluar dari antrean pertama kali."
+  },
+  {
+    "id": "ds-04",
+    "topic": "Singly Linked List",
+    "level": "Intermediate",
+    "category": "code-snippet",
+    "description": "Asah logikamu dalam menelusuri gerbong Linked List dari awal sampai akhir.",
+    "question": "Lengkapi fungsi berikut agar program bisa berjalan melewati setiap node dan mencetak datanya sampai gerbong terakhir selesai.",
+    "code_template": "void printList(Node* head) {\n  Node* current = head;\n  while (current != [blank]) {\n    cout << current->data << \" \";\n    current = current->[blank];\n  }\n}",
+    "correct_answer": "NULL & next",
+    "options": [
+      {
+        "id": "opt1",
+        "content": "NULL & next",
+        "isCorrect": true
+      },
+      {
+        "id": "opt2",
+        "content": "head & next",
+        "ccbh": "Hampir tepat di bagian jalannya! Tapi kalau *while* kamu pakai kondisi *current != head*, perulangan kamu malah nggak akan jalan sama sekali karena di awal nilai *current* itu emang sama dengan *head*. Ujung dari list itu ditandai dengan apa ayo?"
+      },
+      {
+        "id": "opt3",
+        "content": "NULL & head",
+        "ccbh": "Kondisi berhentinya di *NULL* sudah mantap! Tapi perhatikan baris *current = current->head*. Di dalam sebuah Node, tidak ada pointer bernama *head*. Kalau mau geser ke gerbong selanjutnya, kita pakai pointer apa?"
+      }
+    ],
+    "option_type": "bundle-click",
+    "manual_hint": "Untuk berhenti, perulangan harus tahu kapan dia menyentuh ujung list (kosong). Dan untuk melangkah maju, gunakan pointer yang menunjuk ke tetangga sebelahnya."
+  }
+]

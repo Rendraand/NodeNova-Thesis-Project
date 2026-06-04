@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: Cause;
+  src: url("../assets/fonts/Cause-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("../assets/fonts/DMMono-Regular.ttf") format("truetype");
+}
+
+@theme {
+  /* Icy Blue */
+  --color-icy-100: hsl(200, 87%, 92%);
+  --color-icy-200: hsl(200, 87%, 82%);
+  --color-icy-300: hsl(200, 87%, 72%);
+  --color-icy-400: hsl(200, 87%, 62%);
+  --color-primary: hsl(200, 87%, 52%);
+  --color-icy-600: hsl(200, 87%, 42%);
+  --color-icy-700: hsl(200, 87%, 32%);
+
+  /* Baby Pink */
+  --color-babypink-100: hsl(332, 100%, 90%);
+  --color-babypink-200: hsl(332, 100%, 80%);
+  --color-babypink-300: hsl(332, 100%, 70%);
+  --color-babypink-400: hsl(332, 100%, 60%);
+  --color-babypink-500: hsl(332, 100%, 50%);
+  --color-babypink-600: hsl(332, 100%, 40%);
+  --color-babypink-700: hsl(332, 100%, 30%);
+
+  /* Lemon Chiffon */
+  --color-lemon-100: hsl(54, 91%, 96%);
+  --color-lemon-200: hsl(54, 91%, 86%);
+  --color-lemon-300: hsl(54, 91%, 76%);
+  --color-lemon-400: hsl(54, 91%, 66%);
+  --color-lemon-500: hsl(54, 91%, 56%);
+  --color-lemon-600: hsl(54, 91%, 46%);
+  --color-lemon-700: hsl(54, 91%, 36%);
+  --color-lemon-800: hsl(54, 91%, 26%);
+
+  /* Frosted Mint */
+  --color-mint-100: hsl(143, 62%, 89%);
+  --color-mint-200: hsl(143, 62%, 79%);
+  --color-mint-300: hsl(143, 62%, 69%);
+  --color-mint-400: hsl(143, 62%, 59%);
+  --color-mint-500: hsl(143, 62%, 49%);
+  --color-mint-600: hsl(143, 62%, 39%);
+
+  /* Mauve */
+  --color-mauve-purple-100: hsl(278, 82%, 97%);
+  --color-mauve-purple-200: hsl(278, 82%, 87%);
+  --color-mauve-purple-300: hsl(278, 82%, 77%);
+  --color-mauve-purple-400: hsl(278, 82%, 67%);
+  --color-mauve-purple-500: hsl(278, 82%, 57%);
+  --color-mauve-purple-600: hsl(278, 82%, 47%);
+  --color-mauve-purple-700: hsl(278, 82%, 37%);
+}
+
+@layer base {
+  body {
+    font-family:
+      Cause,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      "Open Sans",
+      "Helvetica Neue",
+      sans-serif;
+    color: var(--color-zinc-900);
+  }
+
+  code,
+  .code {
+    font-family: "DM Mono", monospace;
+    display: block;
+  }
+}
+
+.course-card:hover {
+  box-shadow: 0 0 16px hsla(200, 87%, 82%, 0.5);
+}
+
+.canvas-pattern {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-image: radial-gradient(var(--color-icy-100) 2px, #ffffff 2px);
+  background-size: 40px 40px;
+}
