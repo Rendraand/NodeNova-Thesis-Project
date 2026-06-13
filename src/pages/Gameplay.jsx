@@ -1,19 +1,25 @@
 // @ts-check
-import { useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
-
 import React from "react";
-import { useDocumentData, useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  useDocumentData,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
 import { doc, collection } from "firebase/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
+import { useGameProgress } from "../context/GameProgressContext";
 
 import HintSheet from "../components/game/HintSheet";
 import Success from "../components/game/Success";
 import CodeSnippet from "../components/game/CodeSnippet";
 import NodeLinker from "../components/game/NodeLinker";
 import Trees from "../components/game/Trees";
+import ExitConfirmModal from "../components/game/ExitConfirmModal";
+import audioManager from "../utils/audio";
+import NoRewardSuccess from "../components/game/NoRewardSuccess";
 
 /**
  * @typedef {Object} Feedback
@@ -92,9 +98,11 @@ const Gameplay = () => {
   const [resetCounter, setResetCounter] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isNewCompletion, setIsNewCompletion] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   let params = useParams();
-  const { userData } = useAuth();
+  const navigate = useNavigate();
+  const { completedPuzzles } = useGameProgress();
 
   // Fetch data soal spesifik berdasarkan ID dari parameter URL
   const puzzleRef = doc(db, "puzzles", params.id || "unknown");
@@ -104,35 +112,95 @@ const Gameplay = () => {
   const puzzlesRef = collection(db, "puzzles");
   const [allPuzzles, loadingAll] = useCollectionData(puzzlesRef);
 
+  const progressPercentage =
+    ((completedPuzzles?.length || 0) / (allPuzzles?.length || 1)) * 100;
+
   if (loadingPuzzle || loadingAll) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-zinc-500 animate-pulse text-lg font-medium">Memuat misi...</p>
+        <p className="text-zinc-500 animate-pulse text-lg font-medium">
+          Memuat misi...
+        </p>
       </div>
     );
   }
-
-  if (!getData) return <div className="p-10 text-center text-zinc-500">Misi tidak ditemukan...</div>;
-  if (isComplete) return <Success isNew={isNewCompletion} totalPuzzles={allPuzzles?.length || 12} puzzleId={params.id} />;
-
-  const progressPercentage = ((userData?.completed_puzzles?.length || 0) / (allPuzzles?.length || 1)) * 100;
+  if (!getData)
+    return (
+      <div className="p-10 text-center text-zinc-500">
+        Misi tidak ditemukan...
+      </div>
+    );
+  if (isComplete && isNewCompletion)
+    return (
+      <Success
+        isNew={isNewCompletion}
+        totalPuzzles={allPuzzles?.length || 11}
+        puzzleId={params.id}
+        topic={getData.topic}
+      />
+    );
+  if (isComplete && !isNewCompletion)
+    return <NoRewardSuccess percentage={progressPercentage.toFixed(0)} />;
 
   return (
     <React.Fragment>
       {/* Progress bar */}
-      <div className="fixed top-4 left-1/2 -translate-x-1/2 w-3xl">
-        <div className="w-full h-3.75 rounded-full overflow-hidden bg-zinc-200">
-          <motion.span 
+      <div className="fixed top-5 left-1/2 -translate-x-1/2 w-3xl">
+        <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-200">
+          <motion.span
             initial={{ width: 0 }}
             animate={{ width: `${progressPercentage}%` }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="block h-full bg-primary rounded-full"
           ></motion.span>
         </div>
+
+        {/* Back button */}
+        <button
+          onClick={() => {
+            audioManager.playSFX("pop");
+            setShowExitModal(true);
+          }}
+          className="absolute top-1/2 -left-10 rounded-full cursor-pointer p-1.5 hover:bg-zinc-100 transition-colors duration-200 -translate-y-1/2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="-0.75 -0.75 14 14"
+            id="Delete-1--Streamline-Core"
+            height="14"
+            width="14"
+          >
+            <desc>Delete 1 Streamline Icon: https://streamlinehq.com</desc>
+            <g
+              id="delete-1--remove-add-button-buttons-delete-cross-x-mathematics-multiply-math"
+              className="stroke-zinc-500"
+            >
+              <path
+                id="Vector"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m12.053571428571429 0.44642857142857145 -11.607142857142858 11.607142857142858"
+                strokeWidth="1.5"
+              ></path>
+              <path
+                id="Vector_2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m0.44642857142857145 0.44642857142857145 11.607142857142858 11.607142857142858"
+                strokeWidth="1.5"
+              ></path>
+            </g>
+          </svg>
+        </button>
+
+        <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
+          {progressPercentage.toFixed(0)}%
+        </span>
       </div>
 
       {/* Main Box / Canvas */}
-      <div className="w-3xl mx-auto mt-16">
+      <div className="w-3xl mx-auto mt-17">
         <Variants
           key={`gameplay-${resetCounter}`}
           variant={getData.category}
@@ -154,6 +222,19 @@ const Gameplay = () => {
             onClose={() => {
               setShowHint(false);
               setResetCounter((prev) => prev + 1);
+            }}
+          />
+        )}
+        {showExitModal && (
+          <ExitConfirmModal
+            isOpen={showExitModal}
+            onClose={() => {
+              audioManager.playSFX("pop");
+              setShowExitModal(false);
+            }}
+            onConfirm={() => {
+              audioManager.playSFX("pop");
+              navigate("/dashboard");
             }}
           />
         )}

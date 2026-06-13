@@ -19,6 +19,7 @@
   --color-primary: hsl(200, 87%, 52%);
   --color-icy-600: hsl(200, 87%, 42%);
   --color-icy-700: hsl(200, 87%, 32%);
+  --color-icy-800: hsl(200, 87%, 22%);
 
   /* Baby Pink */
   --color-babypink-100: hsl(332, 100%, 90%);
@@ -28,6 +29,7 @@
   --color-babypink-500: hsl(332, 100%, 50%);
   --color-babypink-600: hsl(332, 100%, 40%);
   --color-babypink-700: hsl(332, 100%, 30%);
+  --color-babypink-800: hsl(332, 100%, 20%);
 
   /* Lemon Chiffon */
   --color-lemon-100: hsl(54, 91%, 96%);
@@ -46,6 +48,8 @@
   --color-mint-400: hsl(143, 62%, 59%);
   --color-mint-500: hsl(143, 62%, 49%);
   --color-mint-600: hsl(143, 62%, 39%);
+  --color-mint-700: hsl(143, 62%, 29%);
+  --color-mint-800: hsl(143, 62%, 19%);
 
   /* Mauve */
   --color-mauve-purple-100: hsl(278, 82%, 97%);
@@ -55,6 +59,14 @@
   --color-mauve-purple-500: hsl(278, 82%, 57%);
   --color-mauve-purple-600: hsl(278, 82%, 47%);
   --color-mauve-purple-700: hsl(278, 82%, 37%);
+  --color-mauve-purple-800: hsl(278, 82%, 27%);
+
+  --font-weight-normal: 442;
+  --font-weight-medium: 530;
+  --font-weight-semibold: 615;
+  --font-weight-extrabold: 790;
+
+  --breakpoint-xs: 30rem;
 }
 
 @layer base {

@@ -1,195 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { useGameProgress } from "../../context/GameProgressContext";
-import { db } from "../../services/firebase";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
-import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import audioManager from "../../utils/audio";
-
-const StarParticle = () => {
-  return (
-    <React.Fragment>
-      {[1, 2, 3].map((index) => (
-        <motion.svg
-          key={index}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 14"
-          id="Star-1--Streamline-Core"
-          height="14"
-          width="14"
-          className={"right-0 absolute top-1/2 -translate-y-1/2"}
-          animate={{
-            x: [(index - 1) * -8 - 4, null, null],
-            rotate: [null, null, -100],
-            y: [null, null, -40],
-            opacity: [0, 1, 0],
-            scale: [null, null, 0.3],
-          }}
-          transition={{
-            duration: 0.6,
-            delay: 2.3 + (index - 1) * 0.15,
-            times: [0, 0.1, 1],
-            ease: ["linear", "easeOut"],
-          }}
-        >
-          <desc>Star 1 Streamline Icon: https://streamlinehq.com</desc>
-          <g
-            id="star-1--reward-rating-rate-social-star-media-favorite-like-stars"
-            className="fill-icy-300"
-          >
-            <path
-              id="Union"
-              fillRule="evenodd"
-              d="M7 0.276855c-0.19843 0 -0.39272 0.056768 -0.55993 0.163603 -0.16508 0.10547 -0.29697 0.255388 -0.38055 0.432443L4.47196 4.07799c-0.00312 0.0063 -0.00611 0.01266 -0.00896 0.01909 -0.00071 0.00159 -0.00183 0.00298 -0.00324 0.00401 -0.00141 0.00103 -0.00306 0.00168 -0.0048 0.00187 -0.00609 0.00067 -0.01217 0.00146 -0.01823 0.00236l-3.495581 0.51786c-0.193204 0.01879 -0.377444 0.09129 -0.531759 0.20949 -0.159672 0.12231 -0.280454 0.28829 -0.3477142 0.47784 -0.06726016 0.18955 -0.0781133 0.39454 -0.0312442 0.59014 0.0466876 0.19483 0.1486564 0.37202 0.2936224 0.51027L2.88283 8.87974l-0.00004 0.00005 0.00587 0.00548c0.00365 0.00342 0.0064 0.00769 0.00798 0.01244 0.00158 0.00474 0.00195 0.00981 0.00107 0.01473l-0.00056 0.00327 -0.60974 3.56839 -0.00015 0.0009c-0.0335 0.1934 -0.01214 0.3923 0.06167 0.5741 0.07391 0.1822 0.19747 0.3399 0.3566 0.4553 0.15914 0.1153 0.34746 0.1837 0.54354 0.1973 0.19569 0.0136 0.39127 -0.0279 0.56457 -0.1197l0.00006 -0.0001 0.00099 -0.0005 3.14948 -1.6645c0.01129 -0.0049 0.0235 -0.0075 0.03585 -0.0075s0.02455 0.0026 0.03585 0.0075l3.14943 1.6645 0.0006 0.0003c0.1734 0.0921 0.3692 0.1337 0.565 0.12 0.1961 -0.0136 0.3844 -0.082 0.5436 -0.1973 0.1591 -0.1154 0.2827 -0.2731 0.3566 -0.4553 0.0738 -0.1818 0.0951 -0.3806 0.0617 -0.5739l-0.0002 -0.0011 -0.6097 -3.5684 -0.0006 -0.00326c-0.0009 -0.00492 -0.0005 -0.00999 0.0011 -0.01473 0.0015 -0.00474 0.0043 -0.00902 0.0079 -0.01244l0.0001 0.00005 0.0058 -0.00558 2.5588 -2.46885c0.1449 -0.13825 0.2469 -0.31542 0.2936 -0.51024 0.0468 -0.1956 0.036 -0.40059 -0.0313 -0.59014 -0.0672 -0.18955 -0.188 -0.35553 -0.3477 -0.47784 -0.1543 -0.1182 -0.3385 -0.1907 -0.5317 -0.20949l-3.49562 -0.51786c-0.00606 -0.0009 -0.01214 -0.00169 -0.01823 -0.00236 -0.00174 -0.00019 -0.0034 -0.00084 -0.00481 -0.00187 -0.00141 -0.00103 -0.00252 -0.00242 -0.00323 -0.00401 -0.00285 -0.00643 -0.00584 -0.01279 -0.00896 -0.01909L7.94048 0.872887C7.8569 0.695838 7.72501 0.545925 7.55994 0.440458 7.39272 0.333623 7.19843 0.276855 7 0.276855Z"
-              clipRule="evenodd"
-              strokeWidth="1"
-            ></path>
-          </g>
-        </motion.svg>
-      ))}
-    </React.Fragment>
-  );
-};
-
-const PlusParticle = () => {
-  return (
-    <React.Fragment>
-      {[0, 1, 2, 3, 4].map((index) => {
-        const initialX = [20, 30, 22, 26, 24];
-        const initialY = [30, 32, 34, 36, 38];
-
-        return (
-          <motion.svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 14"
-            id="Add-1--Streamline-Core"
-            height="14"
-            width="14"
-            className="absolute right-0 top-0"
-            animate={{
-              x: [initialX[index], null, null],
-              y: [initialY[index], null, -10],
-              opacity: [0, 1, 0],
-              scale: [null, null, 0.3],
-            }}
-            transition={{
-              duration: 0.5,
-              delay: 4.7 + index * 0.12,
-              ease: [null, "linear"],
-              times: [0, 0.1, 1],
-            }}
-          >
-            <desc>Add 1 Streamline Icon: https://streamlinehq.com</desc>
-            <g
-              id="add-1--expand-cross-buttons-button-more-remove-plus-add-+-mathematics-math"
-              className="stroke-primary"
-            >
-              <path
-                id="Vector"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M7 0.5v13"
-                stroke-width="2"
-              ></path>
-              <path
-                id="Vector_2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M0.5 6.95996h13"
-                stroke-width="2"
-              ></path>
-            </g>
-          </motion.svg>
-        );
-      })}
-    </React.Fragment>
-  );
-};
-
-const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
+const NoRewardSuccess = ({ percentage }) => {
   const { userData } = useAuth();
-  const { completedPuzzles, completePuzzle } = useGameProgress();
-
-  const journeyRef = doc(db, "user_journey", `${userData.uid}_${puzzleId}`);
-  const [journeyData] = useDocumentData(journeyRef);
-  const navigate = useNavigate();
-
-  const isCompletedInList = completedPuzzles.includes(puzzleId);
-  const currentCount = completedPuzzles.length;
-  const newCount = isCompletedInList ? currentCount : currentCount + 1;
-  const prevCount = isNew
-    ? isCompletedInList
-      ? currentCount - 1
-      : currentCount
-    : isCompletedInList
-      ? currentCount
-      : currentCount;
-
-  const prevPercentage = Math.min(
-    100,
-    Math.max(0, (prevCount / totalPuzzles) * 100),
-  );
-  const newPercentage = Math.min(
-    100,
-    Math.max(0, (newCount / totalPuzzles) * 100),
-  );
-
-  const [completedCount, setCompletedCount] = useState(prevCount);
+  const { completedPuzzles } = useGameProgress();
   const [showRedirect, setShowRedirect] = useState(false);
 
-  const hasSaved = useRef(false);
-
   useEffect(() => {
-    // Guard: only save once even with React StrictMode's double-mount in development
-    if (hasSaved.current) return;
-
-    // Save progress to database on mount
-    completePuzzle(puzzleId, topic);
-
-    hasSaved.current = true;
-  }, [puzzleId, topic]);
-
-  useEffect(() => {
-    const redirectTimer = setTimeout(() => {
+    setTimeout(() => {
       setShowRedirect(true);
-    }, 6250);
-
-    const sfxTimer1 = setTimeout(() => {
-      audioManager.playSFX("getReward");
-    }, 2100);
-
-    const sfxTimer2 = setTimeout(() => {
-      audioManager.playSFX("getReward");
-    }, 4600);
-
-    const countTimer = setTimeout(() => {
-      setCompletedCount(newCount);
-    }, 2200);
+    }, 2250);
 
     return () => {
-      clearTimeout(redirectTimer);
-      clearTimeout(sfxTimer1);
-      clearTimeout(sfxTimer2);
-      clearTimeout(countTimer);
+      clearTimeout();
     };
-  }, [newCount]);
-
-  // const toRandomCourse = async () => {
-  //   const puzzlesRef = collection(db, "puzzles");
-  //   const puzzlesQuery = query(
-  //     puzzlesRef,
-  //     where("id", "not-in", [...completedPuzzles, puzzleId]),
-  //   );
-  //   const puzzlesSnapshot = await getDocs(puzzlesQuery);
-  //   const randomIndex = Math.floor(Math.random() * puzzlesSnapshot.size);
-  //   const randomPuzzle = puzzlesSnapshot.docs[randomIndex];
-  //   navigate(`/puzzles/${randomPuzzle.id}`);
-  // };
+  }, []);
 
   const fadeUpVariants = {
     initial: {
@@ -223,50 +51,25 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
     }),
   };
 
-  const animateWidthVariant = {
-    initial: {
-      width: "40%",
-    },
-    animate: (custom) => ({
-      width: custom.width,
-      transition: {
-        duration: custom.duration,
-        ease: custom.ease,
-        delay: custom.delay,
-      },
-    }),
-  };
-
   return (
     <React.Fragment>
-      {/* Progress bar animation */}
+      {/* Progress bar */}
       <motion.div
-        animate={{
-          y: [null, "44vh", null, null],
-          opacity: [null, null, null, 0],
-        }}
-        transition={{
-          duration: 3.25,
-          times: [0, 0.7, 0.9, 1],
-          ease: ["anticipate", "linear", "anticipate"],
-        }}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 0.25, delay: 0.6, ease: "easeOut" }}
         className="fixed top-5 left-1/2 -translate-x-1/2 w-3xl"
       >
-        <div className="relative w-full">
-          <div className="w-full h-2 rounded-full bg-zinc-200">
-            <motion.div
-              initial={{ width: `${prevPercentage}%` }}
-              animate={{ width: `${newPercentage}%` }}
-              transition={{ duration: 1.2, delay: 1.9, ease: "anticipate" }}
-              className="h-full bg-primary rounded-full relative"
-            >
-              <StarParticle />
-            </motion.div>
-          </div>
-          <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
-            {Math.round((completedCount / totalPuzzles) * 100)}%
-          </span>
+        <div className="w-full h-2 rounded-full bg-zinc-200">
+          <div
+            style={{ width: `${percentage}%` }}
+            className="h-full bg-primary rounded-full relative"
+          ></div>
         </div>
+
+        <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
+          {percentage}%
+        </span>
       </motion.div>
 
       {/* Success and Reward Animation Sequence */}
@@ -281,7 +84,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
           variants={fadeUpVariants}
           initial="initial"
           animate="animate"
-          custom={3.5}
+          custom={1.2}
         >
           <desc>
             About Us About Our Team Streamline Illustration:
@@ -1049,22 +852,22 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
 
         <div>
           <motion.h2
-            variants={fadeUpVariants}
+            variants={fadeInVariants}
             initial="initial"
             animate="animate"
-            custom={4}
-            className="font-extrabold text-3xl text-center"
+            custom={1.5}
+            className="font-extrabold text-3xl text-center mb-1.5"
           >
             Keren, {userData?.name || "User"}!
           </motion.h2>
           <motion.p
-            variants={fadeUpVariants}
+            variants={fadeInVariants}
             initial="initial"
             animate="animate"
-            custom={4.2}
-            className="text-zinc-500 text-lg font-medium w-xl text-center"
+            custom={1.8}
+            className="text-zinc-500 text-lg font-medium w-sm text-center"
           >
-            kamu berhasil menyelesaikan misinya, teruskan ya!
+            Tapi kamu gak dapet exp dari soal yang sudah selesai yaa...
           </motion.p>
         </div>
 
@@ -1073,83 +876,30 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
             variants={fadeInVariants}
             initial="initial"
             animate="animate"
-            custom={4.4}
-            className="bg-zinc-100 rounded-[10px]"
-          >
-            <motion.div
-              variants={animateWidthVariant}
-              initial="initial"
-              animate="animate"
-              custom={{
-                width: "100%",
-                duration: 1.1,
-                delay: 4.5,
-                ease: "anticipate",
-              }}
-              className="flex items-center gap-1 px-3.5 py-2.5 font-bold bg-primary w-3/10 text-white rounded-[10px] text-lg relative"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="-0.75 -0.75 18 18"
-                id="Flash-1--Streamline-Core"
-                height="20"
-                width="20"
-              >
-                <desc>Flash 1 Streamline Icon: https://streamlinehq.com</desc>
-                <g id="flash-1--flash-power-connect-charge-electricity-lightning">
-                  <path
-                    id="Vector"
-                    stroke="#ffffff"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5.008928571428571 0.5892857142857143 2.357142857142857 6.8475c-0.03667714285714286 0.08927678571428571 -0.05085535714285715 0.1861907142857143 -0.04130892857142857 0.2822325 0.009546428571428572 0.09604178571428572 0.042534642857142854 0.18827678571428572 0.09607714285714286 0.2685846428571429 0.05353071428571429 0.08029607142857142 0.1259775 0.14622535714285714 0.21096428571428572 0.19197750000000002 0.084975 0.04576392857142857 0.17989714285714287 0.06993642857142857 0.2764103571428571 0.07041964285714286h3.288214285714286l-2.357142857142857 8.25 10.123928571428571 -9.59357142857143c0.08415 -0.08103857142857143 0.14225357142857142 -0.1852242857142857 0.16700357142857142 -0.2993571428571429 0.02475 -0.11412107142857143 0.015085714285714287 -0.23303892857142858 -0.027932142857142857 -0.34164428571428573 -0.0429 -0.10860535714285714 -0.11715 -0.20199535714285713 -0.21320357142857144 -0.26833714285714283 -0.09617142857142857 -0.06633 -0.20978571428571427 -0.10261821428571428 -0.3265821428571429 -0.10423285714285715H9.133928571428571l2.357142857142857 -4.714285714285714h-6.482142857142858Z"
-                    strokeWidth="1.5"
-                  ></path>
-                </g>
-              </svg>{" "}
-              +100 Exp
-              <PlusParticle />
-            </motion.div>
-          </motion.div>
-          <motion.div
-            variants={fadeInVariants}
-            initial="initial"
-            animate="animate"
-            custom={5.75}
-            className="rounded-[10px] flex items-center gap-1 px-4 py-3 font-bold text-zinc-600 border-2 border-zinc-200 text-lg"
+            custom={2}
+            className="bg-zinc-400/50 rounded-[10px] flex items-center gap-1 px-3.5 py-2.5 font-bold text-white text-lg "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="-0.75 -0.75 18 18"
-              id="Lightbulb--Streamline-Core"
+              id="Flash-1--Streamline-Core"
               height="20"
               width="20"
             >
-              <desc>Lightbulb Streamline Icon: https://streamlinehq.com</desc>
-              <g id="lightbulb--lighting-light-incandescent-bulb-lights">
+              <desc>Flash 1 Streamline Icon: https://streamlinehq.com</desc>
+              <g id="flash-1--flash-power-connect-charge-electricity-lightning">
                 <path
                   id="Vector"
-                  stroke="#52525b"
+                  stroke="#ffffff"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M13.553571428571429 5.929487142857143c0.0066 -0.9466757142857143 -0.2404285714285714 -1.8778414285714287 -0.715275 -2.6968425000000003 -0.47484642857142856 -0.8189892857142856 -1.1602682142857144 -1.4959489285714287 -1.985079642857143 -1.9606007142857143C10.028393571428573 0.8073921428571429 9.0942225 0.5719901785714286 8.147711785714286 0.5902757142857142c-0.9465225 0.018284357142857144 -1.8708996428571427 0.28959032142857144 -2.677160357142857 0.7857535714285714 -0.8062607142857143 0.496155 -1.4650114285714284 1.199090357142857 -1.9078832142857145 2.035805357142857 -0.44286 0.8367267857142857 -0.6536946428571428 1.776731785714286 -0.6105942857142858 2.722452857142857 0.043088571428571434 0.9457092857142858 0.33854464285714286 1.8626496428571429 0.8556664285714286 2.655627857142857 0.5171335714285714 0.7929782142857144 1.2370875 1.433072142857143 2.085140357142857 1.8538575v1.7678807142857142c0 0.15627857142857143 0.06207535714285715 0.3061928571428571 0.17259 0.41662499999999997 0.11051464285714287 0.11055 0.2604053571428572 0.17266071428571428 0.4166957142857143 0.17266071428571428h3.5357142857142856c0.15627857142857143 0 0.30616928571428575 -0.06211071428571428 0.41668392857142855 -0.17266071428571428 0.11051464285714287 -0.11043214285714287 0.17260178571428572 -0.2603464285714286 0.17260178571428572 -0.41662499999999997V10.643772857142856c0.8809585714285715 -0.4340442857142857 1.6234585714285714 -1.10517 2.1439157142857144 -1.9379603571428572 0.5204571428571428 -0.8328021428571429 0.7983642857142857 -1.7942689285714286 0.8024892857142857 -2.776325357142857v0Z"
-                  strokeWidth="1.5"
-                ></path>
-                <path
-                  id="Vector_2"
-                  stroke="#52525b"
-                  strokeLinecap="round"
-                  stroke-linejoin="round"
-                  d="M5.892857142857143 15.910714285714286h4.714285714285714"
+                  d="M5.008928571428571 0.5892857142857143 2.357142857142857 6.8475c-0.03667714285714286 0.08927678571428571 -0.05085535714285715 0.1861907142857143 -0.04130892857142857 0.2822325 0.009546428571428572 0.09604178571428572 0.042534642857142854 0.18827678571428572 0.09607714285714286 0.2685846428571429 0.05353071428571429 0.08029607142857142 0.1259775 0.14622535714285714 0.21096428571428572 0.19197750000000002 0.084975 0.04576392857142857 0.17989714285714287 0.06993642857142857 0.2764103571428571 0.07041964285714286h3.288214285714286l-2.357142857142857 8.25 10.123928571428571 -9.59357142857143c0.08415 -0.08103857142857143 0.14225357142857142 -0.1852242857142857 0.16700357142857142 -0.2993571428571429 0.02475 -0.11412107142857143 0.015085714285714287 -0.23303892857142858 -0.027932142857142857 -0.34164428571428573 -0.0429 -0.10860535714285714 -0.11715 -0.20199535714285713 -0.21320357142857144 -0.26833714285714283 -0.09617142857142857 -0.06633 -0.20978571428571427 -0.10261821428571428 -0.3265821428571429 -0.10423285714285715H9.133928571428571l2.357142857142857 -4.714285714285714h-6.482142857142858Z"
                   strokeWidth="1.5"
                 ></path>
               </g>
             </svg>{" "}
-            {journeyData?.ccbh_triggered > 0
-              ? `Memicu ${journeyData?.ccbh_triggered}x Hint`
-              : "Benar tanpa hint!"}
+            +0 Exp
           </motion.div>
         </div>
 
@@ -1171,15 +921,14 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
             </NavLink>
 
             {/* PUZZLES_LENGTH */}
-            {/* {newCount < 11 && (
-              <button
-                onClick={toRandomCourse}
+            {/* {completedPuzzles.length < 11 && (
+              <NavLink
                 className={
                   "px-6 py-3 font-bold rounded-xl text-white bg-mint-500 border-b-4 border-mint-600 active:translate-y-1 active:border-b-0"
                 }
               >
                 Coba misi lain
-              </button>
+              </NavLink>
             )} */}
           </motion.div>
         )}
@@ -1188,4 +937,4 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
   );
 };
 
-export default Success;
+export default NoRewardSuccess;

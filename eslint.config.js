@@ -1,20 +1,45 @@
+import js from "@eslint/js";
 import globals from "globals";
-import eslintReact from "@eslint-react/eslint-plugin";
-import { defineConfig, globalIgnores } from "eslint/config";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 
-export default defineConfig([
-  globalIgnores(["dist"]),
+export default [
+  { ignores: ["dist"] },
   {
     files: ["**/*.{js,jsx}"],
-    extends: [eslintReact.configs.recommended],
-    rules: {
-      "no-unused-vars": "warn",
-      "@eslint-react/dom-no-unknown-property": ["warn", { ignore: ["css"] }],
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
     },
-    settings: { react: { version: "detect" } },
     languageOptions: {
-      globals: globals.browser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.browser,
+        ...globals.es2020,
+      },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      ...reactHooks.configs.flat.recommended.rules,
+      ...reactRefresh.configs.vite.rules,
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: true }],
     },
   },
-]);
+  {
+    files: ["**/*.cjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+    },
+  },
+];

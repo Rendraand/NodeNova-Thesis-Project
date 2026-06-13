@@ -14,17 +14,17 @@ const GetStarted = () => {
         <h1 className="text-xl font-bold">NodeNova</h1>
       </div>
 
-      <div className="flex items-center justify-center w-3xl h-screen mx-auto gap-12.5 my-auto pb-10">
-        <div className="h-48">
-          <h2 className="text-2xl font-[650] mb-8">
+      <div className="flex items-center justify-center h-screen mx-auto gap-12.5 lg:w-3xl flex-col-reverse min-h-fit lg:flex-row md:w-2xl sm:w-xl w-full px-6 md:px-0 py-12 lg:py-0">
+        <div className="flex flex-col gap-8 items-center h-48 lg:items-start">
+          <h2 className="text-2xl font-bold relative z-20 text-center lg:text-left">
             Visualisasikan pointer, susun memori tanpa typo, dan pelajari
             Struktur Data dengan cara yang jauh lebih asyik.
           </h2>
-          
+
           {/* Login button */}
-          <button 
+          <button
             onClick={loginWithGoogle}
-            className="bg-primary border-b-4 border-icy-600 rounded-2xl text-white font-semibold hover:bg-icy-400 cursor-pointer duration-300 active:border-b-2 active:translate-y-1 transition-colors flex items-center gap-2 pt-2.5 pb-2 text-lg ps-6 pe-7"
+            className="bg-primary border-b-4 border-icy-600 rounded-2xl text-white font-bold hover:bg-icy-400 cursor-pointer duration-300 active:border-b-0 active:translate-y-1 transition-colors flex items-center gap-2 pt-2.5 pb-2 text-lg ps-6 pe-7 w-fit"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -47,8 +47,7 @@ const GetStarted = () => {
               fill="none"
               viewBox="-0.5 -0.5 300 300"
               id="Coding--Streamline-Bangalore"
-              height="300"
-              width="300"
+              className="lg:size-75 size-62.5"
             >
               <desc>
                 Coding Streamline Illustration: https://streamlinehq.com
@@ -501,12 +500,11 @@ const GetStarted = () => {
 
           {/* Gradient Elements */}
           <img
-            className="absolute top-0 left-16 -translate-y-8 -rotate-20 opacity-40"
+            className="absolute top-0 left-16 lg:-translate-y-8 -rotate-20 opacity-40 w-10 lg:w-15 -translate-y-4"
             src={sparkleVector}
-            width={60}
           />
-          <div className="w-50 h-50 rounded-full bg-linear-to-b via-lemon-100 to-white absolute -bottom-20 -left-10 opacity-40 from-icy-100"></div>
-          <div className="w-37.5 h-37.5 rounded-full bg-linear-to-r from-babypink-100 to-white opacity-40 absolute top-14 -right-12 via-icy-100"></div>
+          <div className="rounded-full bg-linear-to-b via-lemon-100 to-white absolute -bottom-10 -left-4 opacity-40 from-icy-100 size-35 lg:size-50 lg:-bottom-20 lg:-left-10"></div>
+          <div className="rounded-full bg-linear-to-r from-babypink-100 to-white opacity-40 absolute top-10 -right-8 via-icy-100 size-27.5 lg:size-37.5 lg:top-14 lg:-right-12"></div>
         </div>
       </div>
     </React.Fragment>

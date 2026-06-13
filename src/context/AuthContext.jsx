@@ -1,15 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db, provider } from "../services/firebase";
 import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot,
-  updateDoc,
-  arrayUnion,
-  increment,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 
 /**
  * @typedef {Object} UserData
@@ -28,8 +20,7 @@ import {
  * @property {boolean} loading - State loading saat fetch auth.
  * @property {function(): Promise<void>} loginWithGoogle - Fungsi login.
  * @property {function(): Promise<void>} logout - Fungsi logout.
- * @property {function(string): Promise<void>} savePuzzleProgress - Fungsi update progres.
- * @property {function(string, string, boolean): Promise<void>} updateDetailedProgress - Fungsi simpan progress detail (CCBH & status).
+ * @property {function(string): Promise<void>} registerNewUser - Fungsi registrasi user baru dengan nama tampilan.
  */
 
 const AuthContext = createContext(/** @type {AuthContextType | null} */ (null));
@@ -42,7 +33,6 @@ export const AuthProvider = ({ children }) => {
     /** @type {UserData | null} */ (null),
   );
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     let unsubDoc = null;
 
@@ -83,111 +73,45 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithGoogle = async () => {
+    setLoading(true);
+
     try {
-      const result = await signInWithPopup(auth, provider);
-      const loggedInUser = result.user;
-
-      // Cek apakah user baru
-      const userDocRef = doc(db, "users", loggedInUser.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (!userDoc.exists()) {
-        const initialData = {
-          exp: 0,
-          diamonds: 0,
-          completed_puzzles: [],
-          earned_badges: [],
-          bonus_claimed: false,
-          joinedAt: new Date().toISOString(),
-          name: loggedInUser.displayName,
-        };
-        await setDoc(userDocRef, initialData);
-        setUserData(initialData);
-      }
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Login Error:", error);
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Mendaftarkan user baru ke Firestore dengan nama tampilan yang dipilih
+   * @param {string} displayName
+   * @returns {Promise<void>}
+   */
+  const registerNewUser = async (displayName) => {
+    if (!user) throw new Error("No user is signed in.");
+    setLoading(true);
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const initialData = {
+        exp: 0,
+        diamonds: 0,
+        completed_puzzles: [],
+        bonus_claimed: false,
+        joinedAt: new Date().toISOString(),
+        name: displayName,
+      };
+      await setDoc(userDocRef, initialData);
+      setUserData(initialData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error registering new user:", error);
+      setLoading(false);
+      throw error;
     }
   };
 
   const logout = () => signOut(auth);
-
-  /**
-   * Menyimpan progres puzzle dan mengupdate kurensi
-   * @param {string} puzzleId
-   * @returns {Promise<{isNew: boolean}>}
-   */
-  const savePuzzleProgress = async (puzzleId) => {
-    if (!user || !userData) return { isNew: false };
-    // if (!user || !userData) return;
-
-    const userDocRef = doc(db, "users", user.uid);
-    const isAlreadyCompleted = userData.completed_puzzles.includes(puzzleId);
-
-    // Kita hanya memberi hadiah EXP jika puzzle baru pertama kali diselesaikan
-    if (!isAlreadyCompleted) {
-      const updates = {
-        completed_puzzles: arrayUnion(puzzleId), // Tambah ID tanpa duplikat
-        exp: increment(100), // Atomic increment +100 EXP
-      };
-
-      // --- LOGIKA PENGECEKAN MISI 12 SOAL ---
-      const totalCompleted = userData.completed_puzzles.length + 1;
-      if (totalCompleted === 11 && !userData.bonus_claimed) {
-        updates["diamonds"] = increment(3);
-        updates["bonus_claimed"] = true; // Tandai agar tidak bisa diklaim berulang
-      }
-      // --------------------------------------
-
-      await updateDoc(userDocRef, updates);
-      return { isNew: true };
-    }
-    return { isNew: false };
-  };
-
-  /**
-   * Mengupdate data progres detail user (pelacakan CCBH dan status per puzzle)
-   * @param {string} puzzleId
-   * @param {string} topic
-   * @param {boolean} isCorrect
-   */
-  const updateDetailedProgress = async (puzzleId, topic, isCorrect) => {
-    if (!user) return;
-
-    const progressId = `${user.uid}_${puzzleId}`;
-    const progressDocRef = doc(db, "user_journey", progressId);
-
-    try {
-      const docSnap = await getDoc(progressDocRef);
-
-      if (!docSnap.exists()) {
-        // Buat dokumen baru jika belum ada
-        await setDoc(progressDocRef, {
-          progress_id: progressId,
-          user_id: user.uid,
-          puzzle_id: puzzleId,
-          topic: topic,
-          status: isCorrect ? "completed" : "in progress",
-          ccbh_triggered: isCorrect ? 0 : 1,
-          updated_at: new Date().toISOString(),
-        });
-      } else {
-        const currentData = docSnap.data();
-        // Proteksi: Jika sudah completed, jangan update lagi
-        if (currentData.status === "completed") return;
-
-        const updates = {
-          updated_at: new Date().toISOString(),
-          ...(isCorrect
-            ? { status: "completed" }
-            : { ccbh_triggered: increment(1) }),
-        };
-
-        await updateDoc(progressDocRef, updates);
-      }
-    } catch (error) {
-      console.error("Error updating detailed progress:", error);
-    }
-  };
 
   return (
     <AuthContext.Provider
@@ -197,8 +121,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         loginWithGoogle,
         logout,
-        savePuzzleProgress,
-        updateDetailedProgress,
+        registerNewUser,
       }}
     >
       {children}
