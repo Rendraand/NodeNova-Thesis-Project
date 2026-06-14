@@ -53,7 +53,7 @@ const Journey = () => {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-bold">Topik: {puzzle.topic}</h3>
                     <p
-                      className={`py-0.5 px-2.5 rounded-lg font-semibold ${
+                      className={`py-0.5 px-2.5 rounded-lg font-semibold shrink-0 ${
                         puzzle.status === "completed"
                           ? "bg-mint-500 text-white"
                           : "bg-zinc-300 text-white"

@@ -4,12 +4,13 @@ import { ArcherContainer, ArcherElement } from "react-archer";
 import { DragDropProvider, useDraggable, useDroppable } from "@dnd-kit/react";
 import { useGameProgress } from "../../context/GameProgressContext";
 import audioManager from "../../utils/audio";
+import "../../styles/custom.css";
 
 const AttachedLabel = ({ text, onClick, id }) => {
   return (
     <button
       onClick={(e) => onClick(e, id)}
-      className={`px-3 rounded-lg font-semibold text-sm select-none whitespace-nowrap z-50 transition-all cursor-pointer bg-mauve-purple-100 flex text-mauve-purple-500 border border-mauve-purple-500 items-center h-7`}
+      className={`px-3 rounded-lg font-semibold text-sm select-none whitespace-nowrap z-50 transition-all cursor-pointer bg-mauve-purple-100 flex text-mauve-purple-600 items-center h-7`}
     >
       {text}
     </button>
@@ -220,7 +221,7 @@ const SLLNode = ({
       {hasTrash && (
         <button
           onClick={() => setSelectedNode(node)}
-          className="block cursor-pointer opacity-0 group-hover:opacity-100 transition-all group/trash-zone hover:bg-red-100 p-1 mt-1 ms-1 rounded-full"
+          className="block cursor-pointer group-hover:opacity-100 transition-all group/trash-zone hover:bg-red-100 p-1 mt-1 ms-1 rounded-full opacity-100 md:opacity-0"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -404,7 +405,10 @@ const NodesLayout = ({
   if (layout.layout_type === "sll") {
     return (
       <React.Fragment>
-        <motion.div ref={constraintRef} className="relative w-full h-full">
+        <motion.div
+          ref={constraintRef}
+          className="relative w-full h-full min-w-2xl"
+        >
           {nodes.map((node) => (
             <SLLNode
               key={node.id}
@@ -731,7 +735,12 @@ const NodeLinker = ({
           endShape={{ arrow: { arrowLength: 4, arrowThickness: 4 } }}
           ref={archerRef}
         >
-          <motion.div className="flex h-66 overflow-hidden select-none">
+          <motion.div
+            className="flex h-66 select-none overflow-x-auto clean-scrollbar mx-1 clean-scrollbar-icy"
+            onScroll={() => {
+              if (archerRef.current) archerRef.current.refreshScreen();
+            }}
+          >
             {/* Background pattern */}
             <div className="absolute top-0 left-0 w-full h-full -z-10 canvas-pattern"></div>
 
@@ -772,7 +781,7 @@ const NodeLinker = ({
         </ArcherContainer>
 
         {/* Bottom Control */}
-        <div className="w-full h-24 border-t border-icy-200 flex items-center justify-between px-8 bg-icy-100/20 border-dashed">
+        <div className="w-full border-t border-icy-200 flex items-center justify-between px-8 bg-icy-100/20 border-dashed flex-col gap-4 py-4 sm:flex-row mt-2">
           <div className="flex flex-col gap-2">
             <span className="text-zinc-600 text-sm font-[650]">Label Tray</span>
             <TrayArea enableZone={!!selectedLabelId} onClick={moveLabelTo}>

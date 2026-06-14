@@ -19,9 +19,9 @@ const HintSheet = ({ feedback, onClose }) => {
       animate={{ y: 0, opacity: 1, scale: 1 }}
       exit={{ y: "20%", opacity: 0, scale: 0.8 }}
       transition={{ type: "spring", bounce: 0.6, stiffness: 100 }}
-      className="text-rose-700 font-medium bg-rose-100 rounded-3xl fixed bottom-4 right-2 w-5xl p-7 flex items-center gap-20 left-1/2 z-50 -translate-x-1/2 justify-between"
+      className="text-rose-700 font-medium bg-rose-100 rounded-3xl fixed bottom-4 right-2 p-7 flex items-center left-1/2 z-50 -translate-x-1/2 justify-between w-[95%] flex-col gap-6 md:flex-row md:gap-8 md:w-2xl lg:w-4xl"
     >
-      <div className="max-w-188">
+      <div className="">
         <div className="flex items-center gap-3 mb-2">
           <p className="text-lg font-[650]">{feedback.header}</p>
         </div>

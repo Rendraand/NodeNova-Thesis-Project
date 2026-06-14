@@ -58,22 +58,26 @@ const NoRewardSuccess = ({ percentage }) => {
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 0.25, delay: 0.6, ease: "easeOut" }}
-        className="fixed top-5 left-1/2 -translate-x-1/2 w-3xl"
+        className="fixed top-0 w-full bg-white flex items-center py-4 z-20 justify-center"
       >
-        <div className="w-full h-2 rounded-full bg-zinc-200">
-          <div
-            style={{ width: `${percentage}%` }}
-            className="h-full bg-primary rounded-full relative"
-          ></div>
-        </div>
+        <div className="w-3/4 relative lg:w-3xl">
+          <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-200">
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: `${percentage}%` }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              className="block h-full bg-primary rounded-full"
+            ></motion.span>
+          </div>
 
-        <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
-          {percentage}%
-        </span>
+          <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
+            {percentage}%
+          </span>
+        </div>
       </motion.div>
 
       {/* Success and Reward Animation Sequence */}
-      <div className="flex flex-col items-center w-3xl mx-auto gap-4 mt-12">
+      <div className="flex flex-col items-center w-3/4 sm:w-lg mx-auto gap-4 mt-12">
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -865,13 +869,13 @@ const NoRewardSuccess = ({ percentage }) => {
             initial="initial"
             animate="animate"
             custom={1.8}
-            className="text-zinc-500 text-lg font-medium w-sm text-center"
+            className="text-zinc-500 text-lg font-medium w-full text-center"
           >
             Tapi kamu gak dapet exp dari soal yang sudah selesai yaa...
           </motion.p>
         </div>
 
-        <div className="flex flex-col gap-2.5 w-md">
+        <div className="flex flex-col gap-2.5 w-full">
           <motion.div
             variants={fadeInVariants}
             initial="initial"

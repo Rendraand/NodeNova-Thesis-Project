@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 border-b border-zinc-200 md:hidden">
+    <nav className="flex items-center justify-between p-4 border-b border-zinc-200 md:hidden fixed top-0 bg-white w-full z-20">
       <div className="flex items-center gap-4 relative">
         {/* Hamburger */}
         <button

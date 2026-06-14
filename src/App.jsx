@@ -8,6 +8,7 @@ import Gameplay from "./pages/Gameplay";
 import Root from "./components/layout/Root";
 import Journey from "./pages/Journey";
 import Settings from "./pages/Settings";
+import NoRewardSuccess from "./components/game/NoRewardSuccess";
 
 import "./styles/main.css";
 import { AudioProvider } from "./context/AudioContext";
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
         <Gameplay />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "dev-testing",
+    element: <NoRewardSuccess />,
   },
 ]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import audioManager from "../../utils/audio";
 
 import { motion } from "framer-motion";
@@ -61,6 +61,8 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false);
+
+  const archerRef = useRef(null);
 
   const nodes = data.initial_layout.nodes;
   const edges = data.initial_layout.edges;
@@ -181,153 +183,164 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
       </p>
 
       {/* Tree Canvas */}
-      <div className="border border-icy-300 rounded-2xl overflow-hidden border-dashed mt-4">
+      <div className="border border-icy-300 rounded-2xl overflow-hidden border-dashed mt-4 relative">
         <ArcherContainer
           strokeColor="hsl(200, 87%, 52%)"
           strokeWidth={3}
           endShape={{ arrow: { arrowLength: 4, arrowThickness: 4 } }}
           lineStyle="straight"
+          ref={archerRef}
         >
+          {/* Canvas Pattern */}
+          <div className="canvas-pattern w-full h-full absolute left-0 top-0 -z-10"></div>
           {/* Canvas Area */}
-          <div className="h-88 border-dashed rounded-2xl relative overflow-hidden w-full">
-            {/* Canvas Pattern */}
-            <div className="canvas-pattern w-full h-full absolute left-0 top-0 -z-10"></div>
-
-            {nodes.map((node) => {
-              return (
-                <ArcherElement
-                  key={node.id}
-                  id={node.id}
-                  relations={[
-                    ...edges
-                      .filter((e) => e.from === node.id)
-                      .map((e) => ({
-                        targetId: e.to,
-                        targetAnchor: "top",
-                        sourceAnchor: "middle",
-                        style: {
-                          strokeColor: "hsl(200, 87%, 52%)",
-                          strokeWidth: 3,
-                        },
-                      })),
-                  ]}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: node.initial_x,
-                      top: node.initial_y,
-                    }}
+          <div
+            onScroll={() => {
+              if (archerRef.current) {
+                archerRef.current.refreshScreen();
+              }
+            }}
+            className="h-88 border-dashed rounded-2xl relative w-full overflow-x-auto clean-scrollbar clean-scrollbar-icy"
+          >
+            <div className="min-w-2xl">
+              {nodes.map((node) => {
+                return (
+                  <ArcherElement
+                    key={node.id}
+                    id={node.id}
+                    relations={[
+                      ...edges
+                        .filter((e) => e.from === node.id)
+                        .map((e) => ({
+                          targetId: e.to,
+                          targetAnchor: "top",
+                          sourceAnchor: "middle",
+                          style: {
+                            strokeColor: "hsl(200, 87%, 52%)",
+                            strokeWidth: 3,
+                          },
+                        })),
+                    ]}
                   >
-                    <motion.div
-                      initial={{ opacity: 1, scale: 0.6 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 190,
-                        damping: 20,
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: node.initial_x,
+                        top: node.initial_y,
                       }}
                     >
-                      <TreeNode
-                        node={node}
-                        subCategory={sub_category}
-                        isSelected={selectedIds.includes(node.id)}
-                        isHole={node.label === "[ ? ]"}
-                        holeValue={
-                          node.id === "node-hole-left"
-                            ? optionValues[0]
-                            : node.id === "node-hole-right"
-                              ? optionValues[1]
-                              : null
-                        }
-                        onClick={handleNodeClick}
-                      />
-                    </motion.div>
-                  </div>
-                </ArcherElement>
-              );
-            })}
+                      <motion.div
+                        initial={{ opacity: 1, scale: 0.6 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 190,
+                          damping: 20,
+                        }}
+                      >
+                        <TreeNode
+                          node={node}
+                          subCategory={sub_category}
+                          isSelected={selectedIds.includes(node.id)}
+                          isHole={node.label === "[ ? ]"}
+                          holeValue={
+                            node.id === "node-hole-left"
+                              ? optionValues[0]
+                              : node.id === "node-hole-right"
+                                ? optionValues[1]
+                                : null
+                          }
+                          onClick={handleNodeClick}
+                        />
+                      </motion.div>
+                    </div>
+                  </ArcherElement>
+                );
+              })}
+            </div>
           </div>
 
           {/* Bottom Control */}
-          <div className="bg-icy-100/20 p-4 border-t border-icy-200 border-dashed">
-            <div className="flex justify-end items-end gap-8">
-              {sub_category === "tree-sequence" && (
-                <div className="flex flex-col gap-2 grow">
-                  <div className="flex items-center justify-between">
-                    <p className="text-zinc-600 font-[650]">
-                      Urutan Traversal-mu:
-                    </p>
-                    <button
-                      onClick={() => setSelectedIds([])}
-                      className="text-sm text-rose-500 font-semibold cursor-pointer"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                  <div className="flex gap-2 h-15 px-3 rounded-2xl bg-white border border-icy-300 border-dashed items-center overflow-x-auto">
-                    {selectedIds.map((id, idx) => (
-                      <motion.div
-                        key={`${id}-${idx + 1}`}
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="size-11 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold"
+          <div className="bg-white">
+            <div className="bg-icy-100/20 p-4 border-t border-icy-200 border-dashed">
+              <div className="flex justify-center items-center gap-8 flex-col md:flex-row">
+                {sub_category === "tree-sequence" && (
+                  <div className="flex flex-col gap-2 w-full md:w-fit md:grow">
+                    <div className="flex items-center justify-between">
+                      <p className="text-zinc-600 font-[650]">
+                        Urutan Traversal-mu:
+                      </p>
+                      <button
+                        onClick={() => setSelectedIds([])}
+                        className="text-sm text-rose-500 font-semibold cursor-pointer"
                       >
-                        {nodes.find((n) => n.id === id).label}
-                      </motion.div>
+                        Reset
+                      </button>
+                    </div>
+                    <div className="flex gap-2 h-15 px-3 rounded-2xl bg-white border border-icy-300 border-dashed items-center overflow-x-auto">
+                      {selectedIds.map((id, idx) => (
+                        <motion.div
+                          key={`${id}-${idx + 1}`}
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="size-11 shrink-0 rounded-full bg-primary text-white flex items-center justify-center font-semibold"
+                        >
+                          {nodes.find((n) => n.id === id).label}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {sub_category === "tree-click-options" && (
+                  <div className="flex gap-4 grow flex-wrap justify-center">
+                    {options.map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => setSelectedOption(opt)}
+                        className={`px-6 py-3 rounded-2xl border font-medium transition-colors border-primary border-dashed ${selectedOption?.id === opt.id ? "bg-icy-100 text-icy-700" : "bg-white text-zinc-700 hover:border-primary"}`}
+                      >
+                        {opt.content}
+                      </button>
                     ))}
                   </div>
-                </div>
-              )}
+                )}
 
-              {sub_category === "tree-click-options" && (
-                <div className="flex gap-4 grow">
-                  {options.map((opt) => (
-                    <button
-                      key={opt.id}
-                      onClick={() => setSelectedOption(opt)}
-                      className={`flex-1 px-6 py-3 rounded-2xl border font-medium transition-colors border-primary border-dashed ${selectedOption?.id === opt.id ? "bg-icy-100 text-icy-700" : "bg-white text-zinc-700 hover:border-primary"}`}
-                    >
-                      {opt.content}
-                    </button>
-                  ))}
+                <div className="flex justify-between items-center h-14">
+                  <button
+                    onClick={handleCheck}
+                    className="px-7 py-2 bg-primary text-white font-semibold rounded-xl border-b-3 border-icy-600 active:border-b-0 active:translate-y-0.75 transition-colors disabled:opacity-30 cursor-pointer flex items-center gap-2"
+                    disabled={isVerifying}
+                  >
+                    {isVerifying ? (
+                      <>
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span>Memproses...</span>
+                      </>
+                    ) : (
+                      "Cek Logika!"
+                    )}
+                  </button>
                 </div>
-              )}
-
-              <div className="flex justify-between items-center h-14">
-                <button
-                  onClick={handleCheck}
-                  className="px-7 py-2 bg-primary text-white font-semibold rounded-xl border-b-3 border-icy-600 active:border-b-0 active:translate-y-0.75 transition-colors disabled:opacity-30 cursor-pointer flex items-center gap-2"
-                  disabled={isVerifying}
-                >
-                  {isVerifying ? (
-                    <>
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      <span>Memproses...</span>
-                    </>
-                  ) : (
-                    "Cek Logika!"
-                  )}
-                </button>
               </div>
             </div>
           </div>

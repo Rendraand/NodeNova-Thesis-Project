@@ -7,6 +7,8 @@ import { useGameProgress } from "../../context/GameProgressContext";
 
 import audioManager from "../../utils/audio";
 
+import "../../styles/custom.css";
+
 const CodeBlock = ({ option, isUsed, type, handleOptionClick }) => {
   const { ref } = useDraggable({
     id: option.id,
@@ -14,27 +16,27 @@ const CodeBlock = ({ option, isUsed, type, handleOptionClick }) => {
 
   if (type === "single-drag") {
     return (
-      <div className="bg-zinc-800 rounded-xl">
+      <div className="bg-zinc-200 rounded-xl">
         <div
           ref={ref}
-          className={`px-4 py-1 bg-zinc-800 border-x-2 border-t-2 border-b-4 border-zinc-700 rounded-xl hover:border-zinc-500 transition-colors select-none hover:bg-zinc-700 active:scale-95 cursor-grab active:cursor-grabbing ${
+          className={`px-4 py-1 bg-white border-x-2 border-t-2 border-b-4 border-zinc-200 rounded-xl hover:border-zinc-300 hover:text-zinc-600 transition-colors select-none active:scale-95 cursor-grab active:cursor-grabbing ${
             isUsed ? "opacity-0 pointer-events-none" : ""
           }`}
         >
-          <span className="text-white code">{option.content}</span>
+          <span className="text-zinc-700 code">{option.content}</span>
         </div>
       </div>
     );
   } else if (type === "bundle-click") {
     return (
-      <div className="bg-zinc-800 rounded-xl">
+      <div className="bg-zinc-200 rounded-xl">
         <div
           onClick={() => handleOptionClick(option)}
-          className={`px-4 py-1 bg-zinc-800 border-x-2 border-t-2 border-b-4 border-zinc-700 rounded-xl hover:border-zinc-500 transition-colors select-none hover:bg-zinc-700 cursor-pointer active:border-b-2 active:translate-y-0.5 ${
+          className={`px-4 py-1 bg-white border-x-2 border-t-2 border-b-4 border-zinc-200 rounded-xl transition-colors select-none hover:bg-zinc-100 cursor-pointer active:border-b-2 active:translate-y-0.5 ${
             isUsed ? "opacity-0 pointer-events-none" : ""
           }`}
         >
-          <span className="text-white code">{option.content}</span>
+          <span className="text-zinc-700 code">{option.content}</span>
         </div>
       </div>
     );
@@ -87,10 +89,10 @@ const BlankStructure = ({ id, fill, onRemove }) => {
       transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
       ref={ref}
       onClick={onRemove}
-      className={`inline-flex items-center justify-center h-7 mx-1.5 rounded-lg border px-4 min-w-12 transition-colors hover:bg-icy-700/20 hover:border-primary hover:text-icy-400 border-dashed ${
+      className={`inline-flex items-center justify-center h-7 mx-1.5 rounded-lg border px-4 min-w-12 transition-colors hover:bg-icy-100/20 hover:border-icy-600 hover:text-icy-600 border-dashed ${
         isDropTarget
-          ? "border-primary-strong text-primary bg-icy-700/20 border-dashed scale-105"
-          : "bg-zinc-800 border-zinc-700"
+          ? "border-icy-600 text-icy-600 bg-icy-200/20 border-dashed scale-105"
+          : "bg-zinc-100 border-zinc-300"
       } ${fill && "cursor-pointer"}`}
     >
       <motion.span className="leading-7 whitespace-nowrap code">
@@ -156,6 +158,9 @@ const CodeSnippet = ({
         ? blankStructureMatches.length
         : 0;
       const answerParts = data.correct_answer.split(" & ");
+
+      if (!answers["blank-0"]) return setIsVerifying(false);
+
       const options = data.options;
       const matchOption = options.find(
         (opt) => opt.id === answers["blank-0"].id,
@@ -201,7 +206,7 @@ const CodeSnippet = ({
             layout
             transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
             key={`${i + 1}`}
-            className="text-lemon-400 font-medium"
+            className="text-zinc-400 font-medium"
           >
             {token}
           </motion.span>
@@ -214,7 +219,7 @@ const CodeSnippet = ({
             layout
             transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
             key={`${i + 1}`}
-            className="text-lemon-400 font-medium"
+            className="text-zinc-400 font-medium"
           >
             {token}
           </motion.span>
@@ -227,7 +232,7 @@ const CodeSnippet = ({
             layout
             transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
             key={`${i + 1}`}
-            className="text-babypink-300 font-medium"
+            className="text-babypink-600 font-medium"
           >
             {token}
           </motion.span>
@@ -239,7 +244,7 @@ const CodeSnippet = ({
             layout
             transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
             key={`${i + 1}`}
-            className="text-mint-400"
+            className="text-mint-700"
           >
             {token}
           </motion.span>
@@ -251,7 +256,7 @@ const CodeSnippet = ({
             layout
             transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
             key={`${i + 1}`}
-            className="text-primary-strong"
+            className="text-mauve-purple-600"
           >
             {token}
           </motion.span>
@@ -295,17 +300,17 @@ const CodeSnippet = ({
           }
         }}
       >
-        <div className="mt-8 block bg-zinc-900 rounded-2xl leading-relaxed overflow-hidden">
-          <code className=" py-6 text-zinc-300">
+        <div className="mt-8 block bg-zinc-50 rounded-2xl leading-relaxed">
+          <code className="py-6 text-zinc-600 overflow-x-auto clean-scrollbar clean-scrollbar-zinc mb-2 mx-2">
             {data.code_template.split("\n").map((line, lineIdx) => (
               <div
                 key={`lineIdx-${lineIdx + 1}`}
-                className="flex group hover:bg-zinc-800 transition-colors px-6"
+                className="flex group hover:bg-zinc-200/70 transition-colors px-6"
               >
-                <div className="w-8 text-right pe-4 text-zinc-600 select-none border-r border-zinc-700 group-hover:text-zinc-500 shrink-0">
+                <div className="w-8 text-right pe-4 text-zinc-400 select-none border-e border-zinc-200 group-hover:text-zinc-500 shrink-0">
                   {lineIdx + 1}
                 </div>
-                <div className="pl-4 whitespace-pre flex items-center relative">
+                <div className="whitespace-pre flex items-center relative ps-4 pe-6">
                   {line.split(/(\[blank\])/g).map((part, partIdx) => {
                     if (part === "[blank]") {
                       const currentHoleId = `blank-${blankIndex++}`;
@@ -331,47 +336,49 @@ const CodeSnippet = ({
           </code>
 
           {/* Bottom Controls */}
-          <div className="border-t-2 border-zinc-800 flex items-center justify-between px-6 h-20">
-            <div className="flex gap-4">
+          <div className="border-t-2 border-zinc-200 flex px-3 py-3 gap-4 flex-col items-center sm:flex-row sm:items-center justify-between">
+            <div className="flex gap-2 flex-wrap items-center justify-center sm:justify-start">
               <CodeBlockOptions
                 data={data}
                 answers={answers}
                 setAnswers={setAnswers}
               />
             </div>
-            <button
-              onClick={handleCheck}
-              className={`px-6 py-3 font-semibold text-white bg-primary border-b-3 border-icy-300 rounded-xl active:bg-primary-strong transition-all cursor-pointer duration-100 disabled:bg-zinc-700 disabled:cursor-not-allowed disabled:border-zinc-600 disabled:text-zinc-400 flex items-center gap-2 ${showHint ? "" : "active:border-b-0 active:translate-y-0.75"}`}
-              disabled={showHint || isVerifying}
-            >
-              {isVerifying ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>Memproses...</span>
-                </>
-              ) : (
-                "Cek Logika!"
-              )}
-            </button>
+            <div className="flex items-center shrink-0 h-16">
+              <button
+                onClick={handleCheck}
+                className={`px-6 py-3 font-semibold text-white bg-primary border-b-3 border-icy-600 rounded-xl active:bg-primary-strong transition-colors cursor-pointer duration-100 disabled:bg-zinc-700 disabled:cursor-not-allowed disabled:border-zinc-600 disabled:text-zinc-400 flex items-center gap-2 ${showHint ? "" : "active:border-b-0 active:translate-y-0.75"}`}
+                disabled={showHint || isVerifying}
+              >
+                {isVerifying ? (
+                  <React.Fragment>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Memproses...</span>
+                  </React.Fragment>
+                ) : (
+                  "Cek Logika!"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </DragDropProvider>

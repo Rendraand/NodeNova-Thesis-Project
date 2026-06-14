@@ -225,7 +225,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
 
   const animateWidthVariant = {
     initial: {
-      width: "40%",
+      width: "70%",
     },
     animate: (custom) => ({
       width: custom.width,
@@ -250,7 +250,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
           times: [0, 0.7, 0.9, 1],
           ease: ["anticipate", "linear", "anticipate"],
         }}
-        className="fixed top-5 left-1/2 -translate-x-1/2 w-3xl"
+        className="fixed top-5 left-1/2 -translate-x-1/2 w-3/4 lg:w-3xl"
       >
         <div className="relative w-full">
           <div className="w-full h-2 rounded-full bg-zinc-200">
@@ -270,7 +270,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
       </motion.div>
 
       {/* Success and Reward Animation Sequence */}
-      <div className="flex flex-col items-center w-3xl mx-auto gap-4 mt-12">
+      <div className="flex flex-col items-center w-3/4 sm:w-lg mx-auto gap-4 mt-12">
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -1062,13 +1062,13 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
             initial="initial"
             animate="animate"
             custom={4.2}
-            className="text-zinc-500 text-lg font-medium w-xl text-center"
+            className="text-zinc-500 text-lg font-medium w-full text-center"
           >
             kamu berhasil menyelesaikan misinya, teruskan ya!
           </motion.p>
         </div>
 
-        <div className="flex flex-col gap-2.5 w-md">
+        <div className="flex flex-col gap-2.5 w-full">
           <motion.div
             variants={fadeInVariants}
             initial="initial"
@@ -1086,7 +1086,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
                 delay: 4.5,
                 ease: "anticipate",
               }}
-              className="flex items-center gap-1 px-3.5 py-2.5 font-bold bg-primary w-3/10 text-white rounded-[10px] text-lg relative"
+              className="flex items-center gap-1 px-3.5 py-2.5 font-bold bg-primary text-white rounded-[10px] text-lg relative"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -359,7 +359,7 @@ const CourseCard = ({ data, item, completedPuzzles }) => {
   return (
     <motion.div
       variants={item}
-      className={`cursor-pointer relative transition-colors duration-200 px-4 pb-4 pt-10 xs:pt-4 ${isCompleted ? "bg-mint-100/20 hover:bg-mint-100/40" : "hover:bg-zinc-100"}`}
+      className={`cursor-pointer relative transition-colors duration-200 px-4 pb-4 pt-6 xs:pt-4 ${isCompleted ? "bg-mint-100/20 hover:bg-mint-100/40" : "hover:bg-zinc-100"}`}
     >
       <NavLink className="block" to={`/puzzles/${data.id}`}>
         <div className="flex items-start gap-4 mb-3">
@@ -512,7 +512,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 gap-4">
+      <div className="flex items-center justify-between mb-4 gap-8">
         {/* Greetings */}
         <div className="flex items-center gap-4">
           <div>

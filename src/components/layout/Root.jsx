@@ -41,7 +41,7 @@ const Root = () => {
     <>
       <Sidebar />
       <Navbar />
-      <div className="px-10 pt-12 pb-15 md:ms-60">
+      <div className="px-4 pt-12 pb-15 md:ms-60 md:px-10 mt-16 md:mt-0">
         <Outlet />
       </div>
     </>

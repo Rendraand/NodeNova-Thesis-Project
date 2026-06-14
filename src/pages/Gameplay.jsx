@@ -145,62 +145,64 @@ const Gameplay = () => {
   return (
     <React.Fragment>
       {/* Progress bar */}
-      <div className="fixed top-5 left-1/2 -translate-x-1/2 w-3xl">
-        <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-200">
-          <motion.span
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercentage}%` }}
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="block h-full bg-primary rounded-full"
-          ></motion.span>
-        </div>
+      <div className="fixed top-0 w-full bg-white flex items-center py-4 z-20 justify-center">
+        <div className="w-3/4 relative lg:w-3xl">
+          <div className="w-full h-2 rounded-full overflow-hidden bg-zinc-200">
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              className="block h-full bg-primary rounded-full"
+            ></motion.span>
+          </div>
 
-        {/* Back button */}
-        <button
-          onClick={() => {
-            audioManager.playSFX("pop");
-            setShowExitModal(true);
-          }}
-          className="absolute top-1/2 -left-10 rounded-full cursor-pointer p-1.5 hover:bg-zinc-100 transition-colors duration-200 -translate-y-1/2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="-0.75 -0.75 14 14"
-            id="Delete-1--Streamline-Core"
-            height="14"
-            width="14"
+          {/* Back button */}
+          <button
+            onClick={() => {
+              audioManager.playSFX("pop");
+              setShowExitModal(true);
+            }}
+            className="absolute top-1/2 -left-8 rounded-full cursor-pointer p-1.5 hover:bg-zinc-100 transition-colors duration-200 -translate-y-1/2"
           >
-            <desc>Delete 1 Streamline Icon: https://streamlinehq.com</desc>
-            <g
-              id="delete-1--remove-add-button-buttons-delete-cross-x-mathematics-multiply-math"
-              className="stroke-zinc-500"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="-0.75 -0.75 14 14"
+              id="Delete-1--Streamline-Core"
+              height="14"
+              width="14"
             >
-              <path
-                id="Vector"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m12.053571428571429 0.44642857142857145 -11.607142857142858 11.607142857142858"
-                strokeWidth="1.5"
-              ></path>
-              <path
-                id="Vector_2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m0.44642857142857145 0.44642857142857145 11.607142857142858 11.607142857142858"
-                strokeWidth="1.5"
-              ></path>
-            </g>
-          </svg>
-        </button>
+              <desc>Delete 1 Streamline Icon: https://streamlinehq.com</desc>
+              <g
+                id="delete-1--remove-add-button-buttons-delete-cross-x-mathematics-multiply-math"
+                className="stroke-zinc-500"
+              >
+                <path
+                  id="Vector"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m12.053571428571429 0.44642857142857145 -11.607142857142858 11.607142857142858"
+                  strokeWidth="1.5"
+                ></path>
+                <path
+                  id="Vector_2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m0.44642857142857145 0.44642857142857145 11.607142857142858 11.607142857142858"
+                  strokeWidth="1.5"
+                ></path>
+              </g>
+            </svg>
+          </button>
 
-        <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
-          {progressPercentage.toFixed(0)}%
-        </span>
+          <span className="text-zinc-800 font-semibold text-sm absolute -right-10 top-1/2 -translate-y-1/2">
+            {progressPercentage.toFixed(0)}%
+          </span>
+        </div>
       </div>
 
       {/* Main Box / Canvas */}
-      <div className="w-3xl mx-auto mt-17">
+      <div className="mx-auto mt-17 lg:w-3xl px-6 lg:px-0">
         <Variants
           key={`gameplay-${resetCounter}`}
           variant={getData.category}
