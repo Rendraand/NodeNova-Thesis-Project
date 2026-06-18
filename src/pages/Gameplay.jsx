@@ -20,6 +20,7 @@ import Trees from "../components/game/Trees";
 import ExitConfirmModal from "../components/game/ExitConfirmModal";
 import audioManager from "../utils/audio";
 import NoRewardSuccess from "../components/game/NoRewardSuccess";
+import VideoTutorialModal from "../components/common/VideoTutorialModal";
 
 /**
  * @typedef {Object} Feedback
@@ -99,6 +100,7 @@ const Gameplay = () => {
   const [isComplete, setIsComplete] = useState(false);
   const [isNewCompletion, setIsNewCompletion] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   let params = useParams();
   const navigate = useNavigate();
@@ -216,6 +218,45 @@ const Gameplay = () => {
           data={getData}
         />
       </div>
+
+      {/* Guide Button */}
+      <motion.button
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ type: "spring", bounce: 0.25, damping: 14 }}
+        whileHover={{ scale: 1.05 }}
+        onClick={() => setShowGuide(true)}
+        className="bg-icy-100/60 font-semibold px-4 py-2 rounded-full fixed right-0 bottom-0 m-8 cursor-pointer flex items-center gap-2 text-icy-600"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 14"
+          id="Button-Play--Streamline-Core"
+          height="14"
+          width="14"
+          className="fill-icy-600"
+        >
+          <desc>Button Play Streamline Icon: https://streamlinehq.com</desc>
+          <g id="button-play--button-television-buttons-movies-play-tv-video-controls">
+            <path
+              id="Union"
+              fill="currentFill"
+              fillRule="evenodd"
+              d="M2.67593 0.019165c-0.29576 0 -0.58657 0.0753875 -0.84499 0.218948 -0.26314 0.134139 -0.48525 0.336896 -0.64277 0.58693 -0.15979 0.253627 -0.247004 0.546207 -0.252169 0.845927l-0.000075 0V12.3396H0.935852l0.000149 0.0086c0.005165 0.2997 0.092379 0.5923 0.252169 0.8459 0.15752 0.2501 0.37963 0.4528 0.64277 0.587 0.25842 0.1435 0.54923 0.2189 0.84499 0.2189 0.29995 0 0.59481 -0.0775 0.85596 -0.2251 0.00575 -0.0032 0.01143 -0.0066 0.01704 -0.0101l8.62977 -5.33745c0.2617 -0.13189 0.4826 -0.33282 0.6388 -0.5813 0.1611 -0.25659 0.2467 -0.55345 0.2467 -0.85647 0 -0.30301 -0.0856 -0.59988 -0.2467 -0.85646 -0.1563 -0.24874 -0.3776 -0.44984 -0.6396 -0.58172L3.54751 0.253465c-0.00515 -0.00316 -0.01036 -0.006227 -0.01562 -0.009199 -0.26115 -0.1475588 -0.55601 -0.225101 -0.85596 -0.225101Z"
+              clipRule="evenodd"
+              strokeWidth="1"
+            ></path>
+          </g>
+        </svg>
+        <p>Butuh Bantuan?</p>
+      </motion.button>
+
+      <VideoTutorialModal
+        isOpen={showGuide}
+        onClose={() => setShowGuide(false)}
+        category={getData.category}
+      />
 
       <AnimatePresence>
         {showHint && (

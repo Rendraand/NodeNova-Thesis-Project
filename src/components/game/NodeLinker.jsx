@@ -264,11 +264,11 @@ const StackElement = ({
   return (
     <motion.div
       ref={ref}
-      className="w-30 h-12 flex items-center justify-center relative bg-primary rounded-[10px] text-white text-lg font-semibold cursor-grab active:cursor-grabbing border-2 border-icy-600/80"
+      className="w-30 h-12 flex items-center justify-center relative bg-icy-100 rounded-[10px] text-icy-600 text-lg font-semibold cursor-grab active:cursor-grabbing border border-icy-300"
       whileDrag={{ scale: 0.95 }}
     >
       <p>{node.label}</p>
-      <div className="absolute top-1 right-1.5 bg-icy-300 rounded-full w-14 h-0.75"></div>
+      <div className="absolute top-1 right-2 bg-white/70 rounded-full w-14 h-1"></div>
 
       {/* Label Zone */}
       <div className="absolute top-1 left-0 flex w-24 h-full items-center justify-center -translate-x-full">
