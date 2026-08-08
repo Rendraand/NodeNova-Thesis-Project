@@ -15,7 +15,6 @@ import {
 import { db } from "../services/firebase"; // Pastikan file config firebase kamu sudah benar
 import { useAuth } from "../context/AuthContext";
 import { useGameProgress } from "../context/GameProgressContext";
-import linkedListData from "../data/new_linked_list.json";
 import CourseIcon from "../components/common/CourseIcon";
 import { div } from "motion/react-client";
 import { log } from "firebase/firestore/pipelines";
