@@ -20,6 +20,7 @@
   --color-icy-600: hsl(200, 87%, 42%);
   --color-icy-700: hsl(200, 87%, 32%);
   --color-icy-800: hsl(200, 87%, 22%);
+  --color-icy-900: hsl(200, 87%, 12%);
 
   /* Baby Pink */
   --color-babypink-100: hsl(332, 100%, 90%);
@@ -61,10 +62,10 @@
   --color-mauve-purple-700: hsl(278, 82%, 37%);
   --color-mauve-purple-800: hsl(278, 82%, 27%);
 
-  --font-weight-normal: 442;
-  --font-weight-medium: 530;
-  --font-weight-semibold: 615;
-  --font-weight-extrabold: 790;
+  --font-weight-normal: 474;
+  --font-weight-medium: 544;
+  --font-weight-semibold: 632;
+  --font-weight-extrabold: 795;
 
   --breakpoint-xs: 30rem;
 }

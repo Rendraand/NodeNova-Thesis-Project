@@ -68,11 +68,11 @@
     "cases_ccbh": [
       {
         "condition": "pointer_missing",
-        "ccbh": "Untuk menambahkan node baru ke paling depan, kita perlu sambungkan dulu pointer *node baru* ke posisi *head* awal. Dan pastiin gak ada pointer yang terputus antara node."
+        "ccbh": "Ingat, gerbong kereta tidak bisa berjalan sendiri-sendiri. Kamu butuh 'pengait' (pointer) agar gerbong ini tidak terlepas dan tertinggal dari rangkaian!"
       },
       {
         "condition": "incorrect_label_position",
-        "ccbh": "Pointer-nya sudah bener nih! Kamu tinggal pindahin label *head* ke posisi paling depan."
+        "ccbh": "Jika dalam antrean atau barisan, label 'Urutan Pertama' harus ada pada orang palig depan, bukan orang belakangnya, bukan?"
       }
     ],
     "manual_hint": "Ingat, gerbong baru harus menggandeng gerbong lama terlebih dahulu sebelum kepala masinis (head) pindah mengomandoi gerbong baru tersebut."
@@ -111,32 +111,27 @@
       "has_trash": true
     },
     "validation_rules": {
-      "deleted_nodes": [
-        "node-3"
-      ],
+      "deleted_nodes": ["node-3"],
       "required_labels": [
         {
           "label_id": "lbl-top",
           "must_attach_to": "node-2"
         }
       ],
-      "required_nodes": [
-        "node-1",
-        "node-2"
-      ]
+      "required_nodes": ["node-1", "node-2"]
     },
     "cases_ccbh": [
       {
         "condition": "node_still_exist",
-        "ccbh": "Stop! Ingat prinsip Stack: LIFO (Last-In, First-Out). Kamu cuma bisa mengambil atau menghapus elemen yang berada di tumpukan paling atas (top)."
+        "ccbh": "Ingat prinsip LIFO (Last In, First Out)! Ibarat mengambil piring dari tumpukan, kamu harus mengambil yang paling atas terlebih dahulu agar tumpukan tidak runtuh."
       },
       {
         "condition": "wrong_node_deleted",
-        "ccbh": "Ingat! misi kita hanya satu elemen teratas, jadi elemen lain tidak perlu di hapus. Dan kamu hanya tinggal memindahkan labelnya."
+        "ccbh": "Dalam misi ini anggap kamu hanya membutuhkan satu piring saja. Maka cukup ambil dari tumpukan paling atas saja dan tidak perlu mengambil tumpukan piring lainnya"
       },
       {
         "condition": "incorrect_label_position",
-        "ccbh": "Node 3 berhasil dihapus! Tapi tunggu, posisi label *top* sekarang jadi melayang menunjuk tempat kosong. Yuk, geser label *top* ke elemen yang sekarang menjadi tumpukan paling atas."
+        "ccbh": "Elemen puncak sudah dibuang, tapi kamu belum 'menunjuk' ke elemen yang sekarang menjadi 'pemimpin' baru di posisi paling atas!"
       }
     ],
     "manual_hint": "Bayangkan kamu sedang mengambil piring dari tumpukan piring kotor. Kamu pasti mengambil piring yang paling atas dulu, kan? Setelah itu, piring di bawahnya otomatis menjadi tumpukan teratas yang baru."
@@ -198,9 +193,7 @@
       "has_trash": true
     },
     "validation_rules": {
-      "deleted_nodes": [
-        "node-B"
-      ],
+      "deleted_nodes": ["node-B"],
       "required_pointers": [
         {
           "from": "node-A",
@@ -217,15 +210,15 @@
     "cases_ccbh": [
       {
         "condition": "pointer_missing",
-        "ccbh": "Waduh! Node B sudah kamu hapus, tapi Node A jadi kebingungan karena panahnya menunjuk ke alamat memori yang sudah hilang. Sambungkan dulu panah Node A langsung ke Node C."
+        "ccbh": "Ingat, gerbong kereta tidak bisa berjalan sendiri-sendiri. Kamu butuh 'pengait' (pointer) agar gerbong ini tidak terlepas dan tertinggal dari rangkaian!"
       },
       {
         "condition": "node_still_exist",
-        "ccbh": "Setelah mengubah pointer Node A, jangan lupa untuk menghapus Node B terlebih dahulu supaya *'memori'* lebih bersih."
+        "ccbh": "Jangan biarkan 'sampah' berserakan di memori! Node ini sudah tidak digunakan lagi, segera pindahkan node ke tempat sampah agar aplikasi tidak lambat."
       },
       {
         "condition": "incorrect_label_position",
-        "ccbh": "Ingat, misi kita fokus kita hanya memutus node di tengah-tengah. Maka label head sudah tidak perlu di ubah lagi dari posisi awalnya (paling depan)."
+        "ccbh": "Coba perhatikan labelnya, ibarat dalam antrean atau barisan, label 'Urutan Pertama' harus ada pada orang paling depan, bukan orang belakangnya, kan?"
       }
     ],
     "manual_hint": "Agar gerbong B bisa dilepas tanpa membuat gerbong C tertinggal, gerbong A harus menjulurkan rantai pointernya langsung ke gerbong C terlebih dahulu."

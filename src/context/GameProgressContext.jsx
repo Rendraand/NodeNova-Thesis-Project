@@ -36,11 +36,13 @@ export const GameProgressProvider = ({ children }) => {
    * @returns {Promise<{isNew: boolean}>}
    */
   const savePuzzleProgress = useCallback(
-    async (puzzleId) => {
+    async (puzzleId, topic, level) => {
       if (!user || !userData) return { isNew: false };
 
       const userDocRef = doc(db, "users", user.uid);
       const isAlreadyCompleted = completedPuzzles.includes(puzzleId);
+      const getUser = await getDoc(userDocRef);
+      const getUserData = getUser.data();
 
       // Kita hanya memberi hadiah EXP jika puzzle baru pertama kali diselesaikan
       if (!isAlreadyCompleted) {
@@ -49,12 +51,33 @@ export const GameProgressProvider = ({ children }) => {
           exp: increment(100), // Atomic increment +100 EXP
         };
 
-        // --- LOGIKA PENGECEKAN MISI (11) SOAL ---
-        const totalCompleted = completedPuzzles.length + 1;
-        if (totalCompleted === 11 && !userData.bonus_claimed) {
-          updates["diamonds"] = increment(3);
-          updates["bonus_claimed"] = true; // Tandai agar tidak bisa diklaim berulang
+        if (topic === "Singly Linked List") {
+          updates["current_completed_level"] = {
+            ...getUserData.current_completed_level,
+            linked_list: level,
+          };
         }
+
+        if (topic === "Stack" || topic === "Queue") {
+          updates["current_completed_level"] = {
+            ...getUserData.current_completed_level,
+            stack_and_queue: level,
+          };
+        }
+
+        if (topic === "Binary Search Tree") {
+          updates["current_completed_level"] = {
+            ...getUserData.current_completed_level,
+            binary_tree: level,
+          };
+        }
+
+        // --- LOGIKA PENGECEKAN MISI (11) SOAL ---
+        // const totalCompleted = completedPuzzles.length + 1;
+        // if (totalCompleted === 11 && !userData.bonus_claimed) {
+        //   updates["diamonds"] = increment(3);
+        //   updates["bonus_claimed"] = true; // Tandai agar tidak bisa diklaim berulang
+        // }
         // --------------------------------------
 
         await updateDoc(userDocRef, updates);
@@ -72,10 +95,10 @@ export const GameProgressProvider = ({ children }) => {
    * @param {boolean} isCorrect
    */
   const updateDetailedProgress = useCallback(
-    async (puzzleId, topic, isCorrect) => {
+    async (puzzleId, topic, isCorrect, level) => {
       if (!user) return;
 
-      const progressId = `${user.uid}_${puzzleId}`;
+      const progressId = `${user.uid}-${puzzleId}`;
       const progressDocRef = doc(db, "user_journey", progressId);
 
       try {
@@ -88,6 +111,7 @@ export const GameProgressProvider = ({ children }) => {
             user_id: user.uid,
             puzzle_id: puzzleId,
             topic: topic,
+            level: level,
             status: isCorrect ? "completed" : "in progress",
             ccbh_triggered: isCorrect ? 0 : 1,
             updated_at: new Date().toISOString(),
@@ -120,9 +144,9 @@ export const GameProgressProvider = ({ children }) => {
    * @returns {Promise<{isNew: boolean}>}
    */
   const completePuzzle = useCallback(
-    async (puzzleId, topic) => {
-      const result = await savePuzzleProgress(puzzleId);
-      await updateDetailedProgress(puzzleId, topic, true);
+    async (puzzleId, topic, level) => {
+      const result = await savePuzzleProgress(puzzleId, topic, level);
+      await updateDetailedProgress(puzzleId, topic, true, level);
       return result;
     },
     [savePuzzleProgress, updateDetailedProgress],

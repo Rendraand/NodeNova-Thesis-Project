@@ -292,7 +292,7 @@ const Navbar = () => {
             className="flex items-center justify-center size-12.5. bg-mauve-purple-100 rounded-full cursor-pointer overflow-hidden border-3 border-transparent hover:border-mauve-purple-200 transition-all active:scale-95"
           >
             <img
-              src={user.photoURL}
+              // src={user.photoURL}
               alt="Avatar"
               className="rounded-full border4 border-icy-200 shadow-md object-cover size-10"
               referrerPolicy="no-referrer"

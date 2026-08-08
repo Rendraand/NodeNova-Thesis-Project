@@ -1,4 +1,3 @@
-// @ts-check
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -139,6 +138,7 @@ const Gameplay = () => {
         totalPuzzles={allPuzzles?.length || 11}
         puzzleId={params.id}
         topic={getData.topic}
+        level={getData.level}
       />
     );
   if (isComplete && !isNewCompletion)
@@ -207,7 +207,7 @@ const Gameplay = () => {
       <div className="mx-auto mt-17 lg:w-3xl px-6 lg:px-0">
         <Variants
           key={`gameplay-${resetCounter}`}
-          variant={getData.category}
+          variant={getData.variation}
           setFeedback={setFeedback}
           showHint={showHint}
           setShowHint={setShowHint}
@@ -255,7 +255,7 @@ const Gameplay = () => {
       <VideoTutorialModal
         isOpen={showGuide}
         onClose={() => setShowGuide(false)}
-        category={getData.category}
+        category={getData.variation}
       />
 
       <AnimatePresence>

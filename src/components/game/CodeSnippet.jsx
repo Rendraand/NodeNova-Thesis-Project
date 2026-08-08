@@ -80,7 +80,7 @@ const CodeBlockOptions = ({ data, answers, setAnswers }) => {
 };
 
 // Komponen Droppable untuk part [blank]
-const BlankStructure = ({ id, fill, onRemove }) => {
+const BlankArea = ({ id, fill, onRemove }) => {
   const { isDropTarget, ref } = useDroppable({ id });
 
   return (
@@ -89,11 +89,11 @@ const BlankStructure = ({ id, fill, onRemove }) => {
       transition={{ type: "spring", bounce: 0.4, visualDuration: 0.25 }}
       ref={ref}
       onClick={onRemove}
-      className={`inline-flex items-center justify-center h-7 mx-1.5 rounded-lg border px-4 min-w-12 transition-colors hover:bg-icy-100/20 hover:border-icy-600 hover:text-icy-600 border-dashed ${
+      className={`inline-flex items-center justify-center h-7.5 rounded-lg px-4 transition-colors border-2 border-dashed ${
         isDropTarget
-          ? "border-icy-600 text-icy-600 bg-icy-200/20 border-dashed scale-105"
-          : "bg-zinc-100 border-zinc-300"
-      } ${fill && "cursor-pointer"}`}
+          ? "border-primary text-primary bg-icy-100"
+          : "bg-white border-zinc-300 hover:border-primary hover:bg-icy-100"
+      } ${fill ? "cursor-pointer hover:text-icy-700" : "min-w-15"}`}
     >
       <motion.span className="leading-7 whitespace-nowrap code">
         {fill?.content || ""}
@@ -307,7 +307,7 @@ const CodeSnippet = ({
                 key={`lineIdx-${lineIdx + 1}`}
                 className="flex group hover:bg-zinc-200/70 transition-colors px-6"
               >
-                <div className="w-8 text-right pe-4 text-zinc-400 select-none border-e border-zinc-200 group-hover:text-zinc-500 shrink-0">
+                <div className="w-8 text-right pe-4 text-zinc-400 select-none border-e border-zinc-200 group-hover:text-zinc-500 shrink-0 py-0.5">
                   {lineIdx + 1}
                 </div>
                 <div className="whitespace-pre flex items-center relative ps-4 pe-6">
@@ -315,7 +315,7 @@ const CodeSnippet = ({
                     if (part === "[blank]") {
                       const currentHoleId = `blank-${blankIndex++}`;
                       return (
-                        <BlankStructure
+                        <BlankArea
                           key={currentHoleId}
                           id={currentHoleId}
                           fill={answers[currentHoleId]}

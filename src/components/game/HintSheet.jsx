@@ -1,4 +1,3 @@
-// @ts-check
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import audioManager from "../../utils/audio";
@@ -26,7 +25,20 @@ const HintSheet = ({ feedback, onClose }) => {
           <p className="text-lg font-[650]">{feedback.header}</p>
         </div>
         <p className="font-bold text-lg">Hint:</p>
-        <p>{feedback.hintMessage}</p>
+        {feedback.hintMessage
+          .split(" ")
+          .map((word, index) => {
+            if (word.startsWith("*") && word.endsWith("*")) {
+              return <strong key={index}>{word.slice(1, -1)}</strong>;
+            }
+            return word;
+          })
+          .reduce((acc, word, index) => {
+            if (index === 0) {
+              return [word];
+            }
+            return [...acc, " ", word];
+          }, [])}
       </div>
 
       <button

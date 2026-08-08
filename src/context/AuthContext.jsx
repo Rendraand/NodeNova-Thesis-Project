@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db, provider } from "../services/firebase";
 import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
 
 /**
  * @typedef {Object} UserData
@@ -10,7 +10,7 @@ import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
  * @property {string[]} completed_puzzles - Daftar ID puzzle yang selesai.
  * @property {string[]} earned_badges - Daftar ID badge yang didapat.
  * @property {boolean} bonus_claimed - Status klaim bonus awal.
- * @property {string} joinedAt - Tanggal saat user pertama kali bergabung (ISO String).
+ * @property {string} joined_at - Tanggal saat user pertama kali bergabung (ISO String).
  */
 
 /**
@@ -48,9 +48,27 @@ export const AuthProvider = ({ children }) => {
 
         unsubDoc = onSnapshot(
           userDocRef,
-          (doc) => {
-            if (doc.exists()) {
-              setUserData(/** @type {UserData} */ (doc.data()));
+          async (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              setUserData(/** @type {UserData} */ (data));
+
+              // Sync photoURL if it differs or is missing in Firestore
+              if (
+                currentUser.photoURL &&
+                data.photo_url !== currentUser.photoURL
+              ) {
+                try {
+                  await updateDoc(userDocRef, {
+                    photo_url: currentUser.photoURL,
+                  });
+                } catch (error) {
+                  console.error(
+                    "Error updating photoURL in users collection:",
+                    error,
+                  );
+                }
+              }
             }
             setLoading(false); // Set loading false HANYA setelah snapshot pertama tiba
           },
@@ -95,15 +113,21 @@ export const AuthProvider = ({ children }) => {
       const userDocRef = doc(db, "users", user.uid);
       const initialData = {
         exp: 0,
-        diamonds: 0,
         completed_puzzles: [],
-        bonus_claimed: false,
-        joinedAt: new Date().toISOString(),
+        joined_at: new Date().toISOString(),
         name: displayName,
+        photo_url: user.photoURL || null,
+        badges: [],
+        current_completed_level: {
+          linked_list: 0,
+          stack_and_queue: 0,
+          binary_tree: 0,
+        },
       };
       await setDoc(userDocRef, initialData);
       setUserData(initialData);
       setLoading(false);
+      ``;
     } catch (error) {
       console.error("Error registering new user:", error);
       setLoading(false);

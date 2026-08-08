@@ -61,19 +61,16 @@
     },
     "validation_rules": {
       "selection_mode": "multiple",
-      "correct_selected_ids": [
-        "node-D",
-        "node-E"
-      ]
+      "correct_selected_ids": ["node-D", "node-E"]
     },
     "cases_ccbh": [
       {
         "condition": "root_selected",
-        "ccbh": "Wah, kamu ada memilih Node E yang itu adalah Root (Akar utama) dan dia punya anak (Node F & G). Ingat, Leaf itu harus jomblo alias nggak punya anak sama sekali!"
+        "ccbh": "Node yang kamu pilih masih punya 'tanggungan' (anak). Pilih yang benar-benar 'jomblo' di ujung bawah tanpa cabang lagi!"
       },
       {
         "condition": "incomplete_leaves",
-        "ccbh": "Logikamu sudah benar untuk salah satu node! Tapi coba periksa lagi, masih ada satu node lagi yang tidak memiliki anak di cabang lainnya."
+        "ccbh": "Satu sudah ketemu! Tapi coba sisir lagi cabang lainnya, masih ada 'buah' (leaf) yang tertinggal di sana."
       }
     ],
     "manual_hint": "Lihatlah node yang berada di posisi paling ujung bawah hierarki, di mana tidak ada lagi garis panah yang keluar dari tubuhnya."
@@ -140,13 +137,7 @@
     },
     "validation_rules": {
       "selection_mode": "sequence",
-      "correct_sequence_ids": [
-        "node-A",
-        "node-B",
-        "node-D",
-        "node-C",
-        "node-E"
-      ]
+      "correct_sequence_ids": ["node-A", "node-B", "node-D", "node-C", "node-E"]
     },
     "cases_ccbh": [
       {
@@ -222,13 +213,7 @@
     },
     "validation_rules": {
       "selection_mode": "sequence",
-      "correct_sequence_ids": [
-        "node-D",
-        "node-B",
-        "node-A",
-        "node-C",
-        "node-E"
-      ]
+      "correct_sequence_ids": ["node-D", "node-B", "node-A", "node-C", "node-E"]
     },
     "cases_ccbh": [
       {
@@ -295,12 +280,12 @@
       {
         "id": "opt2",
         "content": "60 & 25",
-        "ccbh": "Aduh, angkanya tertukar posisinya! Ingat rumus mutlak BST: Cabang kiri itu tempatnya angka yang lebih kecil dari 50, dan cabang kanan untuk yang lebih besar."
+        "ccbh": "Angkanya tertukar! Ingat hukum alam BST: yang 'kecil' melipir ke kiri, yang 'besar' geser ke kanan."
       },
       {
         "id": "opt3",
         "content": "20 & 40",
-        "ccbh": "Periksa angka luaran sebelah kananmu! Angka 40 memang lebih kecil dari 50 (cocok untuk kiri), tapi untuk cabang kanan, angkanya wajib lebih besar dari 50."
+        "ccbh": "Timbangannya tidak pas! Cek lagi, angka di kanan wajib lebih 'berat' (besar) dari induknya."
       }
     ],
     "manual_hint": "Rumus mutlak BST: Nilai anak Kiri harus < Induk, dan nilai anak Kanan harus > Induk. Cari opsi paket angka yang mematuhi hukum matematika ini."

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate, Outlet } from "react-router";
 import { RouterProvider } from "react-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GameProgressProvider } from "./context/GameProgressContext";
@@ -8,10 +8,11 @@ import Gameplay from "./pages/Gameplay";
 import Root from "./components/layout/Root";
 import Journey from "./pages/Journey";
 import Settings from "./pages/Settings";
-import NoRewardSuccess from "./components/game/NoRewardSuccess";
+import Leaderboard from "./pages/Leaderboard";
 
 import "./styles/main.css";
 import { AudioProvider } from "./context/AudioContext";
+import Achievements from "./pages/Achievements";
 
 // Helper Component untuk Route di luar Main Layout (seperti Gameplay)
 const ProtectedRoute = ({ children }) => {
@@ -28,19 +29,40 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "journey", element: <Journey /> },
       { path: "settings", element: <Settings /> },
+      { path: "leaderboard", element: <Leaderboard /> },
+      { path: "achievements", element: <Achievements /> },
     ],
   },
   {
-    path: "/puzzles/:id",
+    // path: "/puzzles/:id",
+    // element: (
+    //   <ProtectedRoute>
+    //     <Gameplay />
+    //   </ProtectedRoute>
+    // ),
+    // path: "puzzles/:topic/:id",
     element: (
+      // <ProtectedRoute>
+      // <Gameplay />
+      // </ProtectedRoute>
       <ProtectedRoute>
-        <Gameplay />
+        <Outlet />
       </ProtectedRoute>
     ),
+    children: [
+      { path: ":topic/puzzles/:id", element: <Gameplay /> },
+      // { path: "stack-and-queue/puzzles/:id", element: <Gameplay /> },
+      // { path: "binary-tree/puzzles/:id", element: <Gameplay /> },
+    ],
   },
   {
     path: "dev-testing",
-    element: <NoRewardSuccess />,
+    // element: <NoRewardSuccess />,
+    // element: (
+    //   <div className="w-full h-screen flex justify-center items-center">
+    //     <img src={badges} alt="Badges" className="size-24 object-contain" />
+    //   </div>
+    // ),
   },
 ]);
 

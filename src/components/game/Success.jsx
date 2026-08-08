@@ -111,7 +111,7 @@ const PlusParticle = () => {
   );
 };
 
-const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
+const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
   const { userData } = useAuth();
   const { completedPuzzles, completePuzzle } = useGameProgress();
 
@@ -149,10 +149,10 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic }) => {
     if (hasSaved.current) return;
 
     // Save progress to database on mount
-    completePuzzle(puzzleId, topic);
+    completePuzzle(puzzleId, topic, level);
 
     hasSaved.current = true;
-  }, [puzzleId, topic]);
+  }, [puzzleId, topic, level]);
 
   useEffect(() => {
     const redirectTimer = setTimeout(() => {

@@ -17,16 +17,15 @@
       {
         "id": "opt2",
         "content": "prev",
-        "ccbh": "Eits, ini *Singly* Linked List, jadi jalannya cuma bisa maju ke depan! Kalau *prev* itu biasanya dipakai di Doubly Linked List."
+        "ccbh": "Eits, ini *Singly* *Linked* *List,* jalannya cuma bisa maju ke depan! Kalau *prev* itu ibarat punya spion untuk melihat ke belakang seperti pada *Doubly* *Linked* *List.*"
       },
       {
         "id": "opt3",
         "content": "head",
-        "ccbh": "Wah kalau *head* itu biasanya pointer luar buat nandain awal mula list, coba pikirkan istilah untuk menunjuk ke *sebelahmu*."
+        "ccbh": "*head* itu ibarat penunjuk ke gerbong pertama di stasiun. Nah, di dalam struktur gerbong itu sendiri, kita juga butuh 'pengait' untuk menyambung ke gerbong setelahnya"
       }
     ],
-    "option_type": "single-drag",
-    "manual_hint": "Coba bayangkan orang yang berdiri tepat di belakang kamu dalam sebuah antrean biasanya disebut apa."
+    "option_type": "single-drag"
   },
   {
     "id": "ds-02",
@@ -46,16 +45,15 @@
       {
         "id": "opt2",
         "content": "enqueue",
-        "ccbh": "Waduh, tertukar nih! *enqueue* itu dipakai buat Queue (antrean), kalau Stack biasanya memakai istilah lain untuk menambah ke *tumpukan*."
+        "ccbh": "Enqueue itu seperti orang yang baru datang dan masuk ke barisan antrean. Di sini sifatnya lebih mirip dengan tumpukan piring, semacam 'mendorong' piring ke dalam tumpukan"
       },
       {
         "id": "opt3",
         "content": "insert",
-        "ccbh": "Secara bahasa artinya mirip, tapi dalam istilah teknis Struktur Data, fungsi standar untuk memasukkan data ke Stack itu disebut *push*."
+        "ccbh": "Insert itu sifatnya terlalu umum, seperti menaruh buku di sembarang posisi rak. Ingat istilah khusus untuk 'mendorong' barang masuk ke dalam tumpukan"
       }
     ],
-    "option_type": "single-drag",
-    "manual_hint": "Bayangkan kamu sedang menumpuk piring kotor. Kamu *mendorong* piring baru ke bagian atas tumpukan, kan?."
+    "option_type": "single-drag"
   },
   {
     "id": "ds-03",
@@ -75,16 +73,15 @@
       {
         "id": "opt2",
         "content": "rear",
-        "ccbh": "Rear (atau belakang) itu tempat kita *masukin* data baru (enqueue). Coba ingat-ingat lagi, kalau di antrean nyata, orang yang keluar duluan yang di depan atau belakang?"
+        "ccbh": "Rear adalah pintu masuk bagi orang yang baru mau mengantre. Namun, orang yang dilayani duluan dalam antrean adalah biasanya yang berdiri di posisi mana?"
       },
       {
         "id": "opt3",
         "content": "top",
-        "ccbh": "Wah, 'top' itu istilah yang khusus dipakai buat Stack (Tumpukan), bukan buat Queue."
+        "ccbh": "Mengambil barang dari top ibarat mengambil baju dari tumpukan paling atas (Stack). Sedangkan pada *Queue,* kita melayani orang yang sudah menunggu paling 'depan'"
       }
     ],
-    "option_type": "single-drag",
-    "manual_hint": "Di antrean bioskop, orang yang berada di posisi paling depan yang akan dilayani dan keluar dari antrean pertama kali."
+    "option_type": "single-drag"
   },
   {
     "id": "ds-04",
@@ -104,15 +101,14 @@
       {
         "id": "opt2",
         "content": "head & next",
-        "ccbh": "Hampir tepat di bagian jalannya! Tapi kalau *while* kamu pakai kondisi *current != head*, perulangan kamu malah nggak akan jalan sama sekali karena di awal nilai *current* itu emang sama dengan *head*. Ujung dari list itu ditandai dengan apa ayo?"
+        "ccbh": "Kamu bisa membayangkan ini seperti berjalan di rel kereta api sampai bertemu 'jalan buntu' atau tanda kosong, bukan hanya berhenti di gerbong pertama (head)."
       },
       {
         "id": "opt3",
         "content": "NULL & head",
-        "ccbh": "Kondisi berhentinya di *NULL* sudah mantap! Tapi perhatikan baris *current = current->head*. Di dalam sebuah Node, tidak ada pointer bernama *head*. Kalau mau geser ke gerbong selanjutnya, kita pakai pointer apa?"
+        "ccbh": "Tanda berhentinya sudah benar. Namun, kamu perlu memindahkan penunjuk ke gerbong 'setelahnya' agar bisa sampai ke ujung dan tidak terjebak di gerbong pertama selamanya"
       }
     ],
-    "option_type": "bundle-click",
-    "manual_hint": "Untuk berhenti, perulangan harus tahu kapan dia menyentuh ujung list (kosong). Dan untuk melangkah maju, gunakan pointer yang menunjuk ke tetangga sebelahnya."
+    "option_type": "bundle-click"
   }
 ]

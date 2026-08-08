@@ -6,7 +6,7 @@ import { useGameProgress } from "../../context/GameProgressContext";
 import audioManager from "../../utils/audio";
 import "../../styles/custom.css";
 
-const AttachedLabel = ({ text, onClick, id }) => {
+const TargetLabel = ({ text, onClick, id }) => {
   return (
     <button
       onClick={(e) => onClick(e, id)}
@@ -17,13 +17,13 @@ const AttachedLabel = ({ text, onClick, id }) => {
   );
 };
 
-const LabelZone = ({ children, enableZone, onClick, id }) => {
+const LabelWrapper = ({ children, enableZone, onClick, id, layout_type }) => {
   return (
     <div
       onClick={(e) => {
         onClick(e, id);
       }}
-      className={`h-7 mb-2 rounded-lg transition-colors w-fit mx-auto min-w-10 border ${enableZone ? "border-primary border-dashed bg-icy-100 cursor-pointer animate-pulse" : "border-transparent"}`}
+      className={`h-7 rounded-lg transition-colors w-fit mx-auto min-w-10 border ${enableZone ? "border-primary border-dashed bg-icy-100 cursor-pointer animate-pulse" : "border-transparent"} ${layout_type === "linear-v" ? "top-1/2 -left-2 -translate-y-1/2 -translate-x-full" : "top-0 left-1/2 -translate-x-1/2 -translate-y-8"} z-10 absolute`}
     >
       {children}
     </div>
@@ -41,7 +41,7 @@ const TrayArea = ({ children, enableZone, onClick }) => {
   );
 };
 
-const SLLNode = ({
+const Node = ({
   node,
   canvasRef,
   archerRef,
@@ -59,6 +59,7 @@ const SLLNode = ({
   setHasModified,
   hasTrash,
   setSelectedNode,
+  layout,
 }) => {
   const controls = useDragControls();
 
@@ -110,27 +111,28 @@ const SLLNode = ({
       dragControls={controls}
       onDrag={handleNodeDrag}
       style={{ left: node.initial_x, top: node.initial_y }}
-      className="absolute group"
+      className={`${layout.layout_type === "flex" ? "absolute" : "relative"} group`}
     >
       {/* Label Zone */}
-      <LabelZone
+      <LabelWrapper
         enableZone={
-          selectedLabelId && !labels.some((l) => l.attached_to === node.id)
+          selectedLabelId && !labels.some((l) => l.target_node === node.id)
         }
         onClick={moveLabelTo}
         id={node.id}
+        layout_type={layout.layout_type}
       >
         {labels
-          .filter((l) => l.attached_to === node.id)
+          .filter((l) => l.target_node === node.id)
           .map((l) => (
-            <AttachedLabel
+            <TargetLabel
               key={l.id}
               text={l.text}
               onClick={handleLabelClick}
               id={l.id}
             />
           ))}
-      </LabelZone>
+      </LabelWrapper>
 
       {/* Node + Arrow Pointer */}
       <ArcherElement
@@ -140,8 +142,9 @@ const SLLNode = ({
             .filter((p) => p.from === node.id)
             .map((p) => ({
               targetId: p.to,
-              targetAnchor: "left",
-              sourceAnchor: "right",
+              targetAnchor: layout.layout_type === "linear-v" ? "top" : "left",
+              sourceAnchor:
+                layout.layout_type === "linear-v" ? "bottom" : "right",
               style: {
                 strokeColor: "hsl(200, 87%, 52%)",
                 strokeWidth: 2,
@@ -152,7 +155,8 @@ const SLLNode = ({
                 {
                   targetId: "cursor-node",
                   targetAnchor: "middle",
-                  sourceAnchor: "right",
+                  sourceAnchor:
+                    layout.layout_type === "linear-v" ? "bottom" : "right",
                   style: {
                     strokeColor: "rgba(169, 222, 249, 0.5)",
                     strokeDasharray: "5,5",
@@ -165,14 +169,26 @@ const SLLNode = ({
       >
         <div className="relative">
           <div
-            className={`border border-primary bg-white rounded-xl flex overflow-hidden transition-all ${node.draggable ? "cursor-grab active:cursor-grabbing border-dashed" : ""} ${linkingSource === node.id ? "ring-2 ring-primary/70 ring-offset-2" : ""} ${linkingSource && linkingSource !== node.id ? "hover:ring-2 hover:ring-primary/70 ring-offset-2" : ""}`}
+            className={`border rounded-xl flex overflow-hidden transition-all ${node.draggable ? "cursor-grab active:cursor-grabbing" : ""} ${linkingSource === node.id ? "ring-2 ring-primary/70 ring-offset-2" : ""} ${linkingSource && linkingSource !== node.id ? "hover:ring-2 hover:ring-primary/70 ring-offset-2" : ""} ${layout.layout_type === "linear-h" ? "border-primary bg-icy-300/80" : ""} ${layout.layout_type === "linear-v" ? "border-icy-300 bg-icy-100" : ""}`}
             onPointerDown={startDrag}
             onClick={(e) => completeLinking(e, node.id)}
           >
-            <div className="p-3 text-icy-700 font-medium">{node.label}</div>
             <div
-              className={`px-2.5 bg-icy-100 border-s border-primary ${node.draggable ? "border-dashed" : ""}`}
-            ></div>
+              className={`font-medium text-center flex items-center justify-center ${
+                layout.layout_type === "flex"
+                  ? "w-16 h-10 text-icy-700"
+                  : layout.layout_type === "linear-h"
+                    ? "h-16 w-10 text-icy-800"
+                    : "w-20 h-8 text-icy-600"
+              }`}
+            >
+              {node.label}
+            </div>
+            {layout.layout_type === "flex" && (
+              <div
+                className={`px-2.5 bg-icy-100 border-s border-primary ${node.draggable ? "border-dashed" : ""}`}
+              ></div>
+            )}
           </div>
 
           {/* Pointer Controls */}
@@ -182,7 +198,7 @@ const SLLNode = ({
                 e.stopPropagation();
                 setPointers(pointers.filter((p) => p.from !== node.id));
               }}
-              className="w-3.5 h-3.5 rounded-full bg-icy-400 absolute bottom-0 right-0 translate-x-5 flex items-center justify-center cursor-pointer hover:bg-rose-400 transition-colors"
+              className={`w-3.5 h-3.5 rounded-full bg-icy-400 absolute flex items-center justify-center cursor-pointer hover:bg-rose-400 transition-colors ${layout.layout_type === "linear-v" ? "left-0 bottom-0 translate-y-4" : "bottom-0 right-0 translate-x-5"}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +225,7 @@ const SLLNode = ({
           ) : (
             <div
               onClick={(e) => startLinking(e, node.id)}
-              className="p-2 absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 cursor-crosshair"
+              className={`p-2 absolute  cursor-crosshair ${layout.layout_type === "linear-v" ? "bottom-0 -translate-x-1/2 left-1/2 translate-y-1/2" : "right-0 top-1/2 translate-x-1/2 -translate-y-1/2"}`}
             >
               <div className="p-1 bg-primary rounded-full"></div>
             </div>
@@ -221,7 +237,7 @@ const SLLNode = ({
       {hasTrash && (
         <button
           onClick={() => setSelectedNode(node)}
-          className="block cursor-pointer group-hover:opacity-100 transition-all group/trash-zone hover:bg-red-100 p-1 mt-1 ms-1 rounded-full opacity-100 md:opacity-0"
+          className="block cursor-pointer transition-all group/trash-zone hover:bg-red-100 p-1 rounded-full absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -272,24 +288,24 @@ const StackElement = ({
 
       {/* Label Zone */}
       <div className="absolute top-1 left-0 flex w-24 h-full items-center justify-center -translate-x-full">
-        <LabelZone
+        <LabelWrapper
           enableZone={
-            selectedLabelId && !labels.some((l) => l.attached_to === node.id)
+            selectedLabelId && !labels.some((l) => l.target_node === node.id)
           }
           onClick={moveLabelTo}
           id={node.id}
         >
           {labels
-            .filter((l) => l.attached_to === node.id)
+            .filter((l) => l.target_node === node.id)
             .map((l) => (
-              <AttachedLabel
+              <TargetLabel
                 key={l.id}
                 text={l.text}
                 onClick={handleLabelClick}
                 id={l.id}
               />
             ))}
-        </LabelZone>
+        </LabelWrapper>
       </div>
     </motion.div>
   );
@@ -368,6 +384,18 @@ const StackTrashCan = () => {
   );
 };
 
+const NodesWrapper = ({ children, layout_type }) => {
+  if (layout_type === "flex") return children;
+
+  return (
+    <div
+      className={`${layout_type === "linear-h" ? "gap-10" : "flex-col gap-6"} flex items-center justify-center w-full h-full`}
+    >
+      {children}
+    </div>
+  );
+};
+
 const NodesLayout = ({
   layout,
   canvasRef,
@@ -395,22 +423,22 @@ const NodesLayout = ({
     setNodes(nodes.filter((n) => n.id !== id));
     setPointers(pointers.filter((p) => p.from !== id && p.to !== id));
     setLabels((prev) =>
-      prev.map((l) => (l.attached_to === id ? { ...l, attached_to: null } : l)),
+      prev.map((l) => (l.target_node === id ? { ...l, target_node: null } : l)),
     );
     setSelectedNode(null);
 
     if (!hasModified) setHasModified(true);
   };
 
-  if (layout.layout_type === "sll") {
-    return (
-      <React.Fragment>
-        <motion.div
-          ref={constraintRef}
-          className="relative w-full h-full min-w-2xl"
-        >
+  return (
+    <React.Fragment>
+      <motion.div
+        ref={constraintRef}
+        className="relative w-full h-full min-w-2xl"
+      >
+        <NodesWrapper layout_type={layout.layout_type}>
           {nodes.map((node) => (
-            <SLLNode
+            <Node
               key={node.id}
               node={node}
               canvasRef={canvasRef}
@@ -429,131 +457,136 @@ const NodesLayout = ({
               setHasModified={setHasModified}
               hasTrash={layout.has_trash}
               setSelectedNode={setSelectedNode}
+              layout={layout}
             />
           ))}
-        </motion.div>
+        </NodesWrapper>
+      </motion.div>
 
-        {/* Delete Node Confirmation Popup */}
-        <AnimatePresence>
-          {selectedNode ? (
-            <motion.div
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ opacity: 0, scale: 0.25 }}
-              transition={{
-                type: "spring",
-                bounce: 0.4,
-                duration: 0.8,
-              }}
-              className="bg-white rounded-[10px] absolute bottom-4 right-4 flex items-center gap-5 px-3 py-1.5 shadow-md border border-zinc-100"
-            >
-              <p className="text-zinc-700 font-[550]">
-                Hapus {selectedNode.label}?
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => deleteSLLNode(selectedNode.id)}
-                  className="cursor-pointer"
+      {/* Delete Node Confirmation Popup */}
+      <AnimatePresence>
+        {selectedNode ? (
+          <motion.div
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.25 }}
+            transition={{
+              type: "spring",
+              bounce: 0.4,
+              duration: 0.8,
+            }}
+            className="bg-white rounded-[10px] absolute bottom-4 right-4 flex items-center gap-5 px-3 py-1.5 shadow-md border border-zinc-100"
+          >
+            <p className="text-zinc-700 font-[550]">
+              Hapus {selectedNode.label}?
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => deleteSLLNode(selectedNode.id)}
+                className="cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 12 12"
+                  id="Check--Streamline-Core"
+                  height="12"
+                  width="12"
+                  className="fill-primary"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 12 12"
-                    id="Check--Streamline-Core"
-                    height="12"
-                    width="12"
-                    className="fill-primary"
-                  >
-                    <desc>Check Streamline Icon: https://streamlinehq.com</desc>
-                    <g id="check--check-form-validation-checkmark-success-add-addition-tick">
-                      <path
-                        id="Vector (Stroke)"
-                        fill="currentFill"
-                        fillRule="evenodd"
-                        d="M11.688857142857142 1.0268571428571427a0.8571428571428571 0.8571428571428571 0 0 1 0.11485714285714285 1.2068571428571426l-6.891428571428571 8.34 -0.0025714285714285713 0.0017142857142857142a1.6474285714285712 1.6474285714285712 0 0 1 -1.2857142857142856 0.594 1.6482857142857141 1.6482857142857141 0 0 1 -1.284857142857143 -0.6411428571428571l-0.0008571428571428571 -0.0017142857142857142L0.18 7.752857142857143a0.8571428571428571 0.8571428571428571 0 1 1 1.3525714285714285 -1.0525714285714285l2.1119999999999997 2.7145714285714284 6.836571428571428 -8.273142857142856a0.8571428571428571 0.8571428571428571 0 0 1 1.2068571428571426 -0.11485714285714285Z"
-                        clipRule="evenodd"
-                        strokeWidth="0.8571"
-                      ></path>
-                    </g>
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setSelectedNode(null)}
-                  className="cursor-pointer"
+                  <desc>Check Streamline Icon: https://streamlinehq.com</desc>
+                  <g id="check--check-form-validation-checkmark-success-add-addition-tick">
+                    <path
+                      id="Vector (Stroke)"
+                      fill="currentFill"
+                      fillRule="evenodd"
+                      d="M11.688857142857142 1.0268571428571427a0.8571428571428571 0.8571428571428571 0 0 1 0.11485714285714285 1.2068571428571426l-6.891428571428571 8.34 -0.0025714285714285713 0.0017142857142857142a1.6474285714285712 1.6474285714285712 0 0 1 -1.2857142857142856 0.594 1.6482857142857141 1.6482857142857141 0 0 1 -1.284857142857143 -0.6411428571428571l-0.0008571428571428571 -0.0017142857142857142L0.18 7.752857142857143a0.8571428571428571 0.8571428571428571 0 1 1 1.3525714285714285 -1.0525714285714285l2.1119999999999997 2.7145714285714284 6.836571428571428 -8.273142857142856a0.8571428571428571 0.8571428571428571 0 0 1 1.2068571428571426 -0.11485714285714285Z"
+                      clipRule="evenodd"
+                      strokeWidth="0.8571"
+                    ></path>
+                  </g>
+                </svg>
+              </button>
+              <button
+                onClick={() => setSelectedNode(null)}
+                className="cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 12 12"
+                  id="Delete-1--Streamline-Core"
+                  height="12"
+                  width="12"
+                  className="fill-rose-500"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 12 12"
-                    id="Delete-1--Streamline-Core"
-                    height="12"
-                    width="12"
-                    className="fill-rose-500"
-                  >
-                    <desc>
-                      Delete 1 Streamline Icon: https://streamlinehq.com
-                    </desc>
-                    <g id="delete-1--remove-add-button-buttons-delete-cross-x-mathematics-multiply-math">
-                      <path
-                        id="Union"
-                        fill="currentFill"
-                        fillRule="evenodd"
-                        d="M1.4632371428571427 0.25105114285714286c-0.33474 -0.33473494285714284 -0.8774511428571428 -0.33473494285714284 -1.212186 0 -0.33473494285714284 0.3347348571428571 -0.33473494285714284 0.877446 0 1.212186L4.78782 6 0.25105114285714286 10.536771428571427c-0.33473494285714284 0.3347142857142857 -0.33473494285714284 0.8774571428571428 0 1.2121714285714285 0.3347348571428571 0.3347142857142857 0.877446 0.3347142857142857 1.212186 0L6 7.21218l4.536771428571429 4.536762857142857c0.3347142857142857 0.3347142857142857 0.8774571428571428 0.3347142857142857 1.2121714285714285 0 0.3347142857142857 -0.3347142857142857 0.3347142857142857 -0.8774571428571428 0 -1.2121714285714285L7.21218 6l4.536762857142857 -4.536762857142857c0.3347142857142857 -0.33474 0.3347142857142857 -0.8774511428571428 0 -1.212186 -0.3347142857142857 -0.33473494285714284 -0.8774571428571428 -0.33473494285714284 -1.2121714285714285 0L6 4.78782 1.4632371428571427 0.25105114285714286Z"
-                        clipRule="evenodd"
-                        strokeWidth="0.8571"
-                      ></path>
-                    </g>
-                  </svg>
-                </button>
-              </div>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-      </React.Fragment>
-    );
-  } else if (layout.layout_type === "stack") {
-    return (
-      <DragDropProvider
-        onDragEnd={(event) => {
-          if (event.canceled) return;
-
-          if (event.operation.target?.id === "stack-droppable") {
-            const sourceId = event.operation.source.id;
-
-            setNodes(nodes.filter((n) => n.id !== sourceId));
-            setLabels((prev) =>
-              prev.map((l) =>
-                l.attached_to === sourceId ? { ...l, attached_to: null } : l,
-              ),
-            );
-
-            if (!hasModified) {
-              setHasModified(true);
-            }
-          }
-        }}
-      >
-        <div ref={stackConstraintRef} className="relative w-full h-full">
-          <motion.div className="absolute bottom-2 right-1/2 translate-x-1/2 flex flex-col-reverse gap-1">
-            {nodes.map((node) => (
-              <StackElement
-                key={node.id}
-                node={node}
-                constraint={stackConstraintRef}
-                selectedLabelId={selectedLabelId}
-                moveLabelTo={moveLabelTo}
-                handleLabelClick={handleLabelClick}
-                labels={labels}
-                nodes={nodes}
-              />
-            ))}
+                  <desc>
+                    Delete 1 Streamline Icon: https://streamlinehq.com
+                  </desc>
+                  <g id="delete-1--remove-add-button-buttons-delete-cross-x-mathematics-multiply-math">
+                    <path
+                      id="Union"
+                      fill="currentFill"
+                      fillRule="evenodd"
+                      d="M1.4632371428571427 0.25105114285714286c-0.33474 -0.33473494285714284 -0.8774511428571428 -0.33473494285714284 -1.212186 0 -0.33473494285714284 0.3347348571428571 -0.33473494285714284 0.877446 0 1.212186L4.78782 6 0.25105114285714286 10.536771428571427c-0.33473494285714284 0.3347142857142857 -0.33473494285714284 0.8774571428571428 0 1.2121714285714285 0.3347348571428571 0.3347142857142857 0.877446 0.3347142857142857 1.212186 0L6 7.21218l4.536771428571429 4.536762857142857c0.3347142857142857 0.3347142857142857 0.8774571428571428 0.3347142857142857 1.2121714285714285 0 0.3347142857142857 -0.3347142857142857 0.3347142857142857 -0.8774571428571428 0 -1.2121714285714285L7.21218 6l4.536762857142857 -4.536762857142857c0.3347142857142857 -0.33474 0.3347142857142857 -0.8774511428571428 0 -1.212186 -0.3347142857142857 -0.33473494285714284 -0.8774571428571428 -0.33473494285714284 -1.2121714285714285 0L6 4.78782 1.4632371428571427 0.25105114285714286Z"
+                      clipRule="evenodd"
+                      strokeWidth="0.8571"
+                    ></path>
+                  </g>
+                </svg>
+              </button>
+            </div>
           </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </React.Fragment>
+  );
 
-          <StackTrashCan />
-        </div>
-      </DragDropProvider>
-    );
-  }
+  // if (layout.layout_type === "flex" || layout.layout_type === "linear-h") {
+  //   return;
+  // } else if (layout.layout_type === "stack") {
+  //   return (
+  //     <DragDropProvider
+  //       onDragEnd={(event) => {
+  //         if (event.canceled) return;
+
+  //         if (event.operation.target?.id === "stack-droppable") {
+  //           const sourceId = event.operation.source.id;
+
+  //           setNodes(nodes.filter((n) => n.id !== sourceId));
+  //           setLabels((prev) =>
+  //             prev.map((l) =>
+  //               l.target_node === sourceId ? { ...l, target_node: null } : l,
+  //             ),
+  //           );
+
+  //           if (!hasModified) {
+  //             setHasModified(true);
+  //           }
+  //         }
+  //       }}
+  //     >
+  //       <div ref={stackConstraintRef} className="relative w-full h-full">
+  //         <motion.div className="absolute bottom-2 right-1/2 translate-x-1/2 flex flex-col-reverse gap-1">
+  //           {nodes.map((node) => (
+  //             <StackElement
+  //               key={node.id}
+  //               node={node}
+  //               constraint={stackConstraintRef}
+  //               selectedLabelId={selectedLabelId}
+  //               moveLabelTo={moveLabelTo}
+  //               handleLabelClick={handleLabelClick}
+  //               labels={labels}
+  //               nodes={nodes}
+  //             />
+  //           ))}
+  //         </motion.div>
+
+  //         <StackTrashCan />
+  //       </div>
+  //     </DragDropProvider>
+  //   );
+  // }
 };
 
 const NodeLinker = ({
@@ -604,7 +637,7 @@ const NodeLinker = ({
 
     setLabels((prev) =>
       prev.map((l) =>
-        l.id === selectedLabelId ? { ...l, attached_to: nodeId } : l,
+        l.id === selectedLabelId ? { ...l, target_node: nodeId } : l,
       ),
     );
     setSelectedLabelId(null);
@@ -690,7 +723,7 @@ const NodeLinker = ({
     if (rules.required_labels) {
       const allLabelsCorrect = rules.required_labels.every((req) =>
         labels.some(
-          (l) => l.id === req.label_id && l.attached_to === req.must_attach_to,
+          (l) => l.id === req.id && l.target_node === req.target_node,
         ),
       );
       if (!allLabelsCorrect) {
@@ -736,7 +769,7 @@ const NodeLinker = ({
           ref={archerRef}
         >
           <motion.div
-            className="flex h-66 select-none overflow-x-auto clean-scrollbar mx-1 clean-scrollbar-icy"
+            className="flex h-66 select-none overflow-x-auto lg:overflow-hidden clean-scrollbar mx-2 clean-scrollbar-icy"
             onScroll={() => {
               if (archerRef.current) archerRef.current.refreshScreen();
             }}
@@ -765,7 +798,7 @@ const NodeLinker = ({
               setHasModified={setHasModified}
             />
 
-            {/* Ghost Node for Cursor Preview */}
+            {/* Cursor Preview */}
             {linkingSource && (
               <ArcherElement id="cursor-node">
                 <div
@@ -786,16 +819,16 @@ const NodeLinker = ({
             <span className="text-zinc-600 text-sm font-[650]">Label Tray</span>
             <TrayArea enableZone={!!selectedLabelId} onClick={moveLabelTo}>
               {labels
-                .filter((l) => !l.attached_to)
+                .filter((l) => !l.target_node)
                 .map((l) => (
-                  <AttachedLabel
+                  <TargetLabel
                     key={l.id}
                     onClick={handleLabelClick}
                     text={l.text}
                     id={l.id}
                   />
                 ))}
-              {labels.filter((l) => !l.attached_to).length === 0 && (
+              {labels.filter((l) => !l.target_node).length === 0 && (
                 <span className="text-sm font-medium">
                   Klik di sini untuk lepas label
                 </span>
