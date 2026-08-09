@@ -86,19 +86,9 @@ export const GameProgressProvider = ({ children }) => {
           progressData.ccbh_triggered,
         );
 
-        console.log("new unlocked badges -> ", newUnlockedBadges);
-
         if (newUnlockedBadges.length > 0) {
           updates["badges"] = arrayUnion(...newUnlockedBadges);
         }
-
-        // --- LOGIKA PENGECEKAN MISI (11) SOAL ---
-        // const totalCompleted = completedPuzzles.length + 1;
-        // if (totalCompleted === 11 && !userData.bonus_claimed) {
-        //   updates["diamonds"] = increment(3);
-        //   updates["bonus_claimed"] = true; // Tandai agar tidak bisa diklaim berulang
-        // }
-        // --------------------------------------
 
         await updateDoc(userDocRef, updates);
         return { isNew: true };

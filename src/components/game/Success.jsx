@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { useGameProgress } from "../../context/GameProgressContext";
 import { db } from "../../services/firebase";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import audioManager from "../../utils/audio";
@@ -112,12 +112,13 @@ const PlusParticle = () => {
 };
 
 const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
-  const { userData } = useAuth();
+  const { userData, user } = useAuth();
   const { completedPuzzles, completePuzzle } = useGameProgress();
 
-  const journeyRef = doc(db, "user_journey", `${userData.uid}-${puzzleId}`);
+  const journeyRef = doc(db, "user_journey", `${user.uid}-${puzzleId}`);
   const [journeyData] = useDocumentData(journeyRef);
-  // const navigate = useNavigate();
+
+  console.log(journeyData, `${user.uid}-${puzzleId}`);
 
   const isCompletedInList = completedPuzzles.includes(puzzleId);
   const currentCount = completedPuzzles.length;
@@ -178,18 +179,6 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
       clearTimeout(countTimer);
     };
   }, [newCount]);
-
-  // const toRandomCourse = async () => {
-  //   const puzzlesRef = collection(db, "puzzles");
-  //   const puzzlesQuery = query(
-  //     puzzlesRef,
-  //     where("id", "not-in", [...completedPuzzles, puzzleId]),
-  //   );
-  //   const puzzlesSnapshot = await getDocs(puzzlesQuery);
-  //   const randomIndex = Math.floor(Math.random() * puzzlesSnapshot.size);
-  //   const randomPuzzle = puzzlesSnapshot.docs[randomIndex];
-  //   navigate(`/puzzles/${randomPuzzle.id}`);
-  // };
 
   const fadeUpVariants = {
     initial: {
@@ -1147,9 +1136,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
                 ></path>
               </g>
             </svg>{" "}
-            {journeyData?.ccbh_triggered > 0
-              ? `Memicu ${journeyData?.ccbh_triggered}x Hint`
-              : "Benar tanpa hint!"}
+            {journeyData?.ccbh_triggered + 1}x percobaan
           </motion.div>
         </div>
 
@@ -1169,18 +1156,6 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
             >
               Ke beranda
             </NavLink>
-
-            {/* PUZZLES_LENGTH */}
-            {/* {newCount < 11 && (
-              <button
-                onClick={toRandomCourse}
-                className={
-                  "px-6 py-3 font-bold rounded-xl text-white bg-mint-500 border-b-4 border-mint-600 active:translate-y-1 active:border-b-0"
-                }
-              >
-                Coba misi lain
-              </button>
-            )} */}
           </motion.div>
         )}
       </div>
