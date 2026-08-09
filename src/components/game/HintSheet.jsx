@@ -25,22 +25,8 @@ const HintSheet = ({ feedback, onClose }) => {
           <p className="text-lg font-[650]">{feedback.header}</p>
         </div>
         <p className="font-bold text-lg">Petunjuk:</p>
-
         {/* bold every string between "*" symbols */}
-        {feedback.hintMessage
-          .split(" ")
-          .map((word, index) => {
-            if (word.startsWith("*") && word.endsWith("*")) {
-              return <strong key={index}>{word.slice(1, -1)}</strong>;
-            }
-            return word;
-          })
-          .reduce((acc, word, index) => {
-            if (index === 0) {
-              return [word];
-            }
-            return [...acc, " ", word];
-          }, [])}
+        {feedback.hintMessage}
       </div>
 
       <button

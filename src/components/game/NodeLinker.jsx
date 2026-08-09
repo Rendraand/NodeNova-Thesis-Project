@@ -666,7 +666,7 @@ const NodeLinker = ({
     <React.Fragment>
       <h3 className="text-xl font-semibold text-center">Topik: {data.topic}</h3>
       <p className="text-zinc-500 font-medium text-center max-w-xl mx-auto">
-        {data.description}
+        {data.question}
       </p>
       <div
         className="rounded-2xl mt-4 overflow-hidden border border-icy-300 border-dashed"
