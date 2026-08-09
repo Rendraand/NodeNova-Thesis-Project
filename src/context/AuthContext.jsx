@@ -8,7 +8,7 @@ import { doc, getDoc, setDoc, onSnapshot, updateDoc } from "firebase/firestore";
  * @property {number} exp - Experience points user.
  * @property {number} diamonds - Mata uang premium.
  * @property {string[]} completed_puzzles - Daftar ID puzzle yang selesai.
- * @property {string[]} earned_badges - Daftar ID badge yang didapat.
+ * @property {string[]} badges - Daftar ID badge yang didapat.
  * @property {boolean} bonus_claimed - Status klaim bonus awal.
  * @property {string} joined_at - Tanggal saat user pertama kali bergabung (ISO String).
  */

@@ -9,6 +9,7 @@ import {
   arrayUnion,
   increment,
 } from "firebase/firestore";
+import { unlockAchivements } from "../constants/achievements";
 
 /**
  * @typedef {Object} GameProgressContextType
@@ -40,9 +41,12 @@ export const GameProgressProvider = ({ children }) => {
       if (!user || !userData) return { isNew: false };
 
       const userDocRef = doc(db, "users", user.uid);
-      const isAlreadyCompleted = completedPuzzles.includes(puzzleId);
       const getUser = await getDoc(userDocRef);
       const getUserData = getUser.data();
+      const progressDocRef = doc(db, "user_journey", `${user.uid}-${puzzleId}`);
+      const progressDoc = await getDoc(progressDocRef);
+      const progressData = progressDoc.data();
+      const isAlreadyCompleted = completedPuzzles.includes(puzzleId);
 
       // Kita hanya memberi hadiah EXP jika puzzle baru pertama kali diselesaikan
       if (!isAlreadyCompleted) {
@@ -70,6 +74,22 @@ export const GameProgressProvider = ({ children }) => {
             ...getUserData.current_completed_level,
             binary_tree: level,
           };
+        }
+
+        const currentUserData = userData;
+        // added newly completed level
+        currentUserData.completed_puzzles.push(puzzleId);
+
+        const newUnlockedBadges = unlockAchivements(
+          currentUserData,
+          level,
+          progressData.ccbh_triggered,
+        );
+
+        console.log("new unlocked badges -> ", newUnlockedBadges);
+
+        if (newUnlockedBadges.length > 0) {
+          updates["badges"] = arrayUnion(...newUnlockedBadges);
         }
 
         // --- LOGIKA PENGECEKAN MISI (11) SOAL ---
@@ -145,8 +165,8 @@ export const GameProgressProvider = ({ children }) => {
    */
   const completePuzzle = useCallback(
     async (puzzleId, topic, level) => {
-      const result = await savePuzzleProgress(puzzleId, topic, level);
       await updateDetailedProgress(puzzleId, topic, true, level);
+      const result = await savePuzzleProgress(puzzleId, topic, level);
       return result;
     },
     [savePuzzleProgress, updateDetailedProgress],

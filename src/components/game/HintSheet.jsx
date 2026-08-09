@@ -24,7 +24,9 @@ const HintSheet = ({ feedback, onClose }) => {
         <div className="flex items-center gap-3 mb-2">
           <p className="text-lg font-[650]">{feedback.header}</p>
         </div>
-        <p className="font-bold text-lg">Hint:</p>
+        <p className="font-bold text-lg">Petunjuk:</p>
+
+        {/* bold every string between "*" symbols */}
         {feedback.hintMessage
           .split(" ")
           .map((word, index) => {

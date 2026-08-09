@@ -1,6 +1,6 @@
 import React from "react";
-import sparkleVector from "../assets/vector/Sparkle-Gradient.svg";
 import appLogo from "../assets/vector/App-Logo.svg";
+
 import { useAuth } from "../context/AuthContext";
 
 const GetStarted = () => {

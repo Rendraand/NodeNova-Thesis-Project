@@ -89,6 +89,15 @@ const Variants = ({
 };
 
 const Gameplay = () => {
+  let params = useParams();
+  const { completedPuzzles } = useGameProgress();
+
+  const navigate = useNavigate();
+  // Fetch data soal spesifik berdasarkan ID dari parameter URL
+  const puzzleRef = doc(db, "puzzles", params.id || "unknown");
+  // Fetch koleksi puzzles untuk menghitung total soal (keperluan progress bar)
+  const puzzlesRef = collection(db, "puzzles");
+
   /** @type {[Feedback, import("react").Dispatch<import("react").SetStateAction<Feedback>>]} */
   const [feedback, setFeedback] = useState({
     header: "",
@@ -100,17 +109,7 @@ const Gameplay = () => {
   const [isNewCompletion, setIsNewCompletion] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
-
-  let params = useParams();
-  const navigate = useNavigate();
-  const { completedPuzzles } = useGameProgress();
-
-  // Fetch data soal spesifik berdasarkan ID dari parameter URL
-  const puzzleRef = doc(db, "puzzles", params.id || "unknown");
   const [getData, loadingPuzzle] = useDocumentData(puzzleRef);
-
-  // Fetch koleksi puzzles untuk menghitung total soal (keperluan progress bar)
-  const puzzlesRef = collection(db, "puzzles");
   const [allPuzzles, loadingAll] = useCollectionData(puzzlesRef);
 
   const progressPercentage =
@@ -120,7 +119,7 @@ const Gameplay = () => {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-zinc-500 animate-pulse text-lg font-medium">
-          Memuat misi...
+          Tunggu sebentar...
         </p>
       </div>
     );

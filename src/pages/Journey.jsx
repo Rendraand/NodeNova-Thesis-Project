@@ -1,27 +1,11 @@
+import React from "react";
+
 import { collection, query, orderBy, where } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { db } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
-import React from "react";
-import { NavLink } from "react-router";
-
-const Skeleton = () => {
-  return (
-    <div className="flex flex-col items-center pt-10">
-      {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="flex flex-col items-center w-full md:w-md lg:w-lg"
-        >
-          <div className="bg-zinc-100 w-full h-30 rounded-xl animate-pulse"></div>
-          {i !== 3 && (
-            <span className="border-s-2 border-dashed h-24 border-zinc-100"></span>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-};
+import { GAME_CONFIG } from "../constants/gameConfig";
+import { motion } from "framer-motion";
 
 const Journey = () => {
   const { user, userData } = useAuth();
@@ -36,6 +20,33 @@ const Journey = () => {
 
   const [completedPuzzles, loading, error] =
     useCollectionData(completedPuzzleQuery);
+
+  const progressPercentage =
+    ((userData?.completed_puzzles?.length || 0) / GAME_CONFIG.TOTAL_PUZZLES) *
+    100;
+
+  const styleMap = {
+    "Singly Linked List": {
+      node: "bg-icy-300 shadow-[0_6px_0_0_#0E8AC8]",
+      cardBg: "bg-icy-100",
+      cardColor: "text-icy-700",
+    },
+    Stack: {
+      node: "bg-mauve-purple-300 shadow-[0_6px_0_0_#A937EB]",
+      cardBg: "bg-mauve-purple-100",
+      cardColor: "text-mauve-purple-500",
+    },
+    Queue: {
+      node: "bg-mauve-purple-300 shadow-[0_6px_0_0_#A937EB]",
+      cardBg: "bg-mauve-purple-100",
+      cardColor: "text-mauve-purple-500",
+    },
+    "Binary Search Tree": {
+      node: "bg-mint-400 shadow-[0_6px_0_0_#26A155]",
+      cardBg: "bg-mint-100",
+      cardColor: "text-mint-700",
+    },
+  };
 
   return (
     <div>
@@ -79,9 +90,16 @@ const Journey = () => {
         </div>
 
         <div className="mb-8">
-          <p className="text-zinc-800 font-semibold mb-1 text-lg">6%</p>
+          <p className="text-zinc-800 font-semibold mb-1 text-lg">
+            {progressPercentage.toFixed(0)}%
+          </p>
           <div className="flex bg-zinc-200 h-2 rounded-full">
-            <div className="w-1/15 bg-primary h-2 rounded-full"></div>
+            <motion.span
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              className="block h-full bg-primary rounded-full"
+            ></motion.span>
           </div>
         </div>
 
@@ -107,14 +125,18 @@ const Journey = () => {
         </div>
       </div>
 
-      {loading && <Skeleton />}
+      {loading && <>Loading...</>}
       {error && <p>Error: {error.message}</p>}
       {completedPuzzles?.length > 0 && (
         <ul className="flex flex-col items-center pt-20 pb-10">
           {completedPuzzles?.map((puzzle, i) => (
             <React.Fragment>
               <li key={puzzle.id} className="flex flex-col items-center">
-                <div className="flex items-center px-5 py-4 bg-icy-300 rounded-xl shadow-[0_6px_0_0_#0E8AC8] relative">
+                <div
+                  className={`flex items-center px-5 py-4 rounded-xl relative ${
+                    styleMap[puzzle.topic].node
+                  }`}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -138,9 +160,13 @@ const Journey = () => {
                     </g>
                   </svg>
                   <div
-                    className={`text-icy-700 w-78 absolute ${i % 2 === 0 ? "-top-4 left-28" : "-top-4 -left-12 -translate-x-full"}`}
+                    className={` ${styleMap[puzzle.topic].cardColor} w-78 absolute ${i % 2 === 0 ? "-top-4 left-28" : "-top-4 -left-12 -translate-x-full"}`}
                   >
-                    <div className="p-5 rounded-2xl w-full border-dashed relative bg-icy-100">
+                    <div
+                      className={`p-5 rounded-2xl w-full border-dashed relative ${
+                        styleMap[puzzle.topic].cardBg
+                      }`}
+                    >
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="text-lg font-bold">
                           Level {puzzle.level || "-"} - {puzzle.topic}
@@ -148,7 +174,6 @@ const Journey = () => {
                       </div>
 
                       <div className="flex justify-between font-medium">
-                        <p>Code snippet</p>
                         <p>{puzzle.ccbh_triggered + 1}x percobaan</p>
                       </div>
                     </div>

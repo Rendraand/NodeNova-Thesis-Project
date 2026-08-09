@@ -142,7 +142,7 @@ const CodeSnippet = ({
         const isNew = !completedPuzzles.includes(data.id);
         setIsComplete(true, isNew);
       } else {
-        await updateDetailedProgress(data.id, data.topic, false);
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
         setFeedback({
           header: `Jawaban ${userPicked.content} kurang tepat nih!`,
           hintMessage:
@@ -169,7 +169,7 @@ const CodeSnippet = ({
       for (let i = 0; i < blankFound; i++) {
         const userPicked = answers[`blank-${i}`];
         if (userPicked.content !== answerParts[i]) {
-          await updateDetailedProgress(data.id, data.topic, false);
+          await updateDetailedProgress(data.id, data.topic, false, data.level);
           setFeedback({
             header: `Wah, ${matchOption.content} masih kurang tepat!`,
             hintMessage:

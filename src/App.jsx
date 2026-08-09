@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, Outlet } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GameProgressProvider } from "./context/GameProgressContext";
@@ -9,16 +9,32 @@ import Root from "./components/layout/Root";
 import Journey from "./pages/Journey";
 import Settings from "./pages/Settings";
 import Leaderboard from "./pages/Leaderboard";
+import Achievements from "./pages/Achievements";
 
 import "./styles/main.css";
 import { AudioProvider } from "./context/AudioContext";
-import Achievements from "./pages/Achievements";
+import { useParams } from "react-router";
+import { doc } from "firebase/firestore";
+import { db } from "./services/firebase";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 
-// Helper Component untuk Route di luar Main Layout (seperti Gameplay)
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-  return user ? children : <Navigate to="/" replace />;
+  const { id } = useParams();
+  const { user, userData, loading } = useAuth();
+
+  const puzzleRef = doc(db, "puzzles", id || "unknown");
+
+  const [puzzleData, loadingPuzzle] = useDocumentData(puzzleRef);
+
+  if (loading || loadingPuzzle) return null;
+
+  return user &&
+    (!puzzleData?.prerequisite_id ||
+      userData?.completed_puzzles.includes(puzzleData?.prerequisite_id)) ? (
+    children
+  ) : (
+    <Navigate to="/dashboard" replace />
+  );
 };
 
 const router = createBrowserRouter([
@@ -34,35 +50,12 @@ const router = createBrowserRouter([
     ],
   },
   {
-    // path: "/puzzles/:id",
-    // element: (
-    //   <ProtectedRoute>
-    //     <Gameplay />
-    //   </ProtectedRoute>
-    // ),
-    // path: "puzzles/:topic/:id",
+    path: ":topic/puzzles/:id",
     element: (
-      // <ProtectedRoute>
-      // <Gameplay />
-      // </ProtectedRoute>
       <ProtectedRoute>
-        <Outlet />
+        <Gameplay />
       </ProtectedRoute>
     ),
-    children: [
-      { path: ":topic/puzzles/:id", element: <Gameplay /> },
-      // { path: "stack-and-queue/puzzles/:id", element: <Gameplay /> },
-      // { path: "binary-tree/puzzles/:id", element: <Gameplay /> },
-    ],
-  },
-  {
-    path: "dev-testing",
-    // element: <NoRewardSuccess />,
-    // element: (
-    //   <div className="w-full h-screen flex justify-center items-center">
-    //     <img src={badges} alt="Badges" className="size-24 object-contain" />
-    //   </div>
-    // ),
   },
 ]);
 

@@ -2,27 +2,33 @@ import React from "react";
 import MasterOfLists from "../assets/vector/Master-of-Lists-Locked.svg";
 import TreeArchitect from "../assets/vector/Tree-Architect-Locked.svg";
 import LogicSurvivor from "../assets/vector/Logic-Survivor-Locked.svg";
+import MasterOfListsUnlocked from "../assets/vector/Master-of-Lists.svg";
+import TreeArchitectUnlocked from "../assets/vector/Tree-Architect.svg";
+import LogicSurvivorUnlocked from "../assets/vector/Logic-Survivor.svg";
 
 import { db } from "../services/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
-// import { useUser } from "../context/UserContext";
+import { useAuth } from "../context/AuthContext";
 
 const Achievements = () => {
-  // const { userData } = useUser();
+  const { userData } = useAuth();
 
   const vectorLockedUrlMap = {
     "Master of Lists": MasterOfLists,
     "Tree Architect": TreeArchitect,
     "Logic Survivor": LogicSurvivor,
   };
+  const vectorUnlockedUrlMap = {
+    "Master of Lists": MasterOfListsUnlocked,
+    "Tree Architect": TreeArchitectUnlocked,
+    "Logic Survivor": LogicSurvivorUnlocked,
+  };
 
   const achievementsRef = collection(db, "achievements");
   const q = query(achievementsRef, orderBy("name", "asc"));
 
   const [achievements, loading, error] = useCollectionData(q);
-
-  console.log(achievements);
 
   return (
     <React.Fragment>
@@ -37,7 +43,11 @@ const Achievements = () => {
             >
               <img
                 className="size-24"
-                src={vectorLockedUrlMap[achievement.name]}
+                src={
+                  userData?.badges.includes(achievement.id)
+                    ? vectorUnlockedUrlMap[achievement.name]
+                    : vectorLockedUrlMap[achievement.name]
+                }
                 alt={achievement.name}
               />
               <h3 className="text-xl font-bold">{achievement.name}</h3>

@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import { AnimatePresence, motion, useDragControls } from "framer-motion";
 import { ArcherContainer, ArcherElement } from "react-archer";
-import { DragDropProvider, useDraggable, useDroppable } from "@dnd-kit/react";
 import { useGameProgress } from "../../context/GameProgressContext";
+
 import audioManager from "../../utils/audio";
+
 import "../../styles/custom.css";
 
 const TargetLabel = ({ text, onClick, id }) => {
@@ -169,7 +170,7 @@ const Node = ({
       >
         <div className="relative">
           <div
-            className={`border rounded-xl flex overflow-hidden transition-all ${node.draggable ? "cursor-grab active:cursor-grabbing" : ""} ${linkingSource === node.id ? "ring-2 ring-primary/70 ring-offset-2" : ""} ${linkingSource && linkingSource !== node.id ? "hover:ring-2 hover:ring-primary/70 ring-offset-2" : ""} ${layout.layout_type === "linear-h" ? "border-primary bg-icy-300/80" : ""} ${layout.layout_type === "linear-v" ? "border-icy-300 bg-icy-100" : ""}`}
+            className={`border rounded-xl flex overflow-hidden transition-all ${node.draggable ? "cursor-grab active:cursor-grabbing" : ""} ${linkingSource === node.id ? "ring-2 ring-primary/70 ring-offset-2" : ""} ${linkingSource && linkingSource !== node.id ? "hover:ring-2 hover:ring-primary/70 ring-offset-2" : ""} ${layout.layout_type === "linear-h" ? "border-primary bg-icy-300/80" : ""} ${layout.layout_type === "linear-v" ? "border-icy-300 bg-icy-100" : ""} ${layout.layout_type === "flex" ? "bg-white border-primary" : ""}`}
             onPointerDown={startDrag}
             onClick={(e) => completeLinking(e, node.id)}
           >
@@ -237,7 +238,7 @@ const Node = ({
       {hasTrash && (
         <button
           onClick={() => setSelectedNode(node)}
-          className="block cursor-pointer transition-all group/trash-zone hover:bg-red-100 p-1 rounded-full absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full"
+          className={`block cursor-pointer transition-all group/trash-zone hover:bg-red-100 p-1 rounded-full absolute ${layout.layout_type === "linear-v" ? "-right-2 top-1/2 -translate-y-1/2 translate-x-full" : "bottom-0 left-0 translate-y-6"}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -262,124 +263,6 @@ const Node = ({
           </svg>
         </button>
       )}
-    </motion.div>
-  );
-};
-
-const StackElement = ({
-  node,
-  selectedLabelId,
-  moveLabelTo,
-  handleLabelClick,
-  labels,
-}) => {
-  const { ref } = useDraggable({
-    id: node.id,
-  });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="w-30 h-12 flex items-center justify-center relative bg-icy-100 rounded-[10px] text-icy-600 text-lg font-semibold cursor-grab active:cursor-grabbing border border-icy-300"
-      whileDrag={{ scale: 0.95 }}
-    >
-      <p>{node.label}</p>
-      <div className="absolute top-1 right-2 bg-white/70 rounded-full w-14 h-1"></div>
-
-      {/* Label Zone */}
-      <div className="absolute top-1 left-0 flex w-24 h-full items-center justify-center -translate-x-full">
-        <LabelWrapper
-          enableZone={
-            selectedLabelId && !labels.some((l) => l.target_node === node.id)
-          }
-          onClick={moveLabelTo}
-          id={node.id}
-        >
-          {labels
-            .filter((l) => l.target_node === node.id)
-            .map((l) => (
-              <TargetLabel
-                key={l.id}
-                text={l.text}
-                onClick={handleLabelClick}
-                id={l.id}
-              />
-            ))}
-        </LabelWrapper>
-      </div>
-    </motion.div>
-  );
-};
-
-const StackTrashCan = () => {
-  const { isDropTarget, ref } = useDroppable({
-    id: "stack-droppable",
-  });
-
-  return (
-    <motion.div
-      ref={ref}
-      className={`absolute bottom-4 right-8 bg-rose-50/80 flex flex-col w-24 h-24 border-2 border-rose-300 border-dashed rounded-xl items-center justify-center text-rose-400 font-semibold gap-1 transition-colors ${isDropTarget ? "bg-rose-100/60 border-rose-400 text-rose-500" : ""}`}
-      animate={{ scale: isDropTarget ? 1.05 : 1 }}
-      transition={{
-        type: "spring",
-        stiffness: 240,
-      }}
-    >
-      <motion.svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="-1 -1 32 32"
-        id="Recycle-Bin-2--Streamline-Core"
-        height="32"
-        width="32"
-        className={`stroke-rose-400 ${isDropTarget ? "stroke-rose-500" : ""}`}
-        animate={{ scale: isDropTarget ? 1.1 : 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 240,
-        }}
-      >
-        <desc>Recycle Bin 2 Streamline Icon: https://streamlinehq.com</desc>
-        <g id="recycle-bin-2--remove-delete-empty-bin-trash-garbage">
-          <path
-            id="Vector"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M2.142857142857143 7.5h25.714285714285715"
-            strokeWidth="2"
-          ></path>
-          <path
-            id="Vector_2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5.357142857142857 7.5h19.285714285714285v19.285714285714285c0 0.5682857142857143 -0.22585714285714284 1.1134285714285712 -0.6276428571428571 1.5152142857142856s-0.9469285714285715 0.6276428571428571 -1.5152142857142856 0.6276428571428571h-15c-0.5683285714285714 0 -1.1133642857142856 -0.22585714285714284 -1.5152357142857142 -0.6276428571428571C5.582914285714286 27.899142857142856 5.357142857142857 27.354 5.357142857142857 26.785714285714285v-19.285714285714285Z"
-            strokeWidth="2"
-          ></path>
-          <path
-            id="Vector_3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9.642857142857142 7.5V6.428571428571429c0 -1.4207999999999998 0.5644071428571429 -2.7834214285714283 1.5690642857142858 -3.7880785714285716C12.21657857142857 1.63584 13.5792 1.0714285714285714 15 1.0714285714285714c1.4207999999999998 0 2.7834214285714283 0.5644114285714286 3.7880785714285716 1.5690642857142858C19.792735714285715 3.64515 20.357142857142858 5.007771428571428 20.357142857142858 6.428571428571429v1.0714285714285714"
-            strokeWidth="2"
-          ></path>
-          <path
-            id="Vector_4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M11.785714285714285 13.9317V22.50642857142857"
-            strokeWidth="2"
-          ></path>
-          <path
-            id="Vector_5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M18.214285714285715 13.9317V22.50642857142857"
-            strokeWidth="2"
-          ></path>
-        </g>
-      </motion.svg>
-      <p>Buang</p>
     </motion.div>
   );
 };
@@ -541,52 +424,6 @@ const NodesLayout = ({
       </AnimatePresence>
     </React.Fragment>
   );
-
-  // if (layout.layout_type === "flex" || layout.layout_type === "linear-h") {
-  //   return;
-  // } else if (layout.layout_type === "stack") {
-  //   return (
-  //     <DragDropProvider
-  //       onDragEnd={(event) => {
-  //         if (event.canceled) return;
-
-  //         if (event.operation.target?.id === "stack-droppable") {
-  //           const sourceId = event.operation.source.id;
-
-  //           setNodes(nodes.filter((n) => n.id !== sourceId));
-  //           setLabels((prev) =>
-  //             prev.map((l) =>
-  //               l.target_node === sourceId ? { ...l, target_node: null } : l,
-  //             ),
-  //           );
-
-  //           if (!hasModified) {
-  //             setHasModified(true);
-  //           }
-  //         }
-  //       }}
-  //     >
-  //       <div ref={stackConstraintRef} className="relative w-full h-full">
-  //         <motion.div className="absolute bottom-2 right-1/2 translate-x-1/2 flex flex-col-reverse gap-1">
-  //           {nodes.map((node) => (
-  //             <StackElement
-  //               key={node.id}
-  //               node={node}
-  //               constraint={stackConstraintRef}
-  //               selectedLabelId={selectedLabelId}
-  //               moveLabelTo={moveLabelTo}
-  //               handleLabelClick={handleLabelClick}
-  //               labels={labels}
-  //               nodes={nodes}
-  //             />
-  //           ))}
-  //         </motion.div>
-
-  //         <StackTrashCan />
-  //       </div>
-  //     </DragDropProvider>
-  //   );
-  // }
 };
 
 const NodeLinker = ({
@@ -655,22 +492,42 @@ const NodeLinker = ({
     const casesHint = data.cases_ccbh;
 
     if (rules.deleted_nodes) {
+      // check for stack topic specifically if the initial (top) node is still exists
       const currentIds = nodes.map((n) => n.id);
+      if (
+        data.topic === "Stack" &&
+        rules.deleted_nodes.some((id) => id === data.initial_layout.nodes[0].id)
+      ) {
+        const topNotMoved = nodes.some(
+          (n) => n.id === data.initial_layout.nodes[0].id,
+        );
+        if (topNotMoved) {
+          const foundCase = casesHint.find(
+            (c) => c.condition === "top_not_moved",
+          );
+
+          await updateDetailedProgress(data.id, data.topic, false, data.level);
+          setShowHint(true);
+          setFeedback({
+            header: "Sepertinya kamu belum menghapus node nya!",
+            hintMessage: foundCase
+              ? foundCase.ccbh
+              : "Coba cek kembali node yang harus dihapus ya...",
+          });
+          setIsVerifying(false);
+          return;
+        }
+      }
+
       const stillExists = rules.deleted_nodes.some((id) =>
         currentIds.includes(id),
       );
       if (stillExists) {
-        const foundCase = casesHint.find(
-          (c) => c.condition === "node_still_exist",
-        );
-
-        await updateDetailedProgress(data.id, data.topic, false);
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
         setShowHint(true);
         setFeedback({
-          header: "Hmm, kamu belum menghapus node atau element nya nih...",
-          hintMessage: foundCase
-            ? foundCase.ccbh
-            : "Tidak menemukan case-based hint yang cocok. Silahkan cek kembali.",
+          header: "Sepertinya kamu belum menghapus node nya!",
+          hintMessage: "Coba cek kembali node yang harus dihapus ya...",
         });
         setIsVerifying(false);
         return;
@@ -682,17 +539,12 @@ const NodeLinker = ({
         nodes.some((n) => n.id === req),
       );
       if (!allRequiredNodes) {
-        const foundCase = casesHint.find(
-          (c) => c.condition === "wrong_node_deleted",
-        );
-
-        await updateDetailedProgress(data.id, data.topic, false);
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
         setShowHint(true);
         setFeedback({
-          header: "Sepertinya kamu salah menghapus node, coba cek lagi ya...",
-          hintMessage: foundCase
-            ? foundCase.ccbh
-            : "Tidak menemukan case-based hint yang cocok. Silahkan cek kembali.",
+          header: "Ada susunan yang kurang nih!",
+          hintMessage:
+            "Pasti ada node yang terlewati. Coba periksa kembali node yang harus dihapus.",
         });
         setIsVerifying(false);
         return;
@@ -704,16 +556,77 @@ const NodeLinker = ({
         pointers.some((p) => p.from === req.from && p.to === req.to),
       );
       if (!allPointersCorrect) {
-        const foundCase = casesHint.find(
-          (c) => c.condition === "pointer_missing",
+        // check if some pointer (link) reversed
+        const someReversed = rules.required_pointers.some((req) =>
+          pointers.some((p) => p.from === req.to && p.to === req.from),
         );
-        await updateDetailedProgress(data.id, data.topic, false);
+
+        if (someReversed) {
+          const foundCase = casesHint.find(
+            (c) => c.condition === "reversed_link",
+          );
+          await updateDetailedProgress(data.id, data.topic, false, data.level);
+          setShowHint(true);
+          setFeedback({
+            header: "Pointer-nya ada yang salah arah nih!",
+            hintMessage: foundCase
+              ? foundCase.ccbh
+              : "Coba cek kembali arah pointer nya ya!",
+          });
+          setIsVerifying(false);
+          return;
+        }
+
+        // check if front (node) pointer skip directly to C (rear) node
+        if (data.topic === "Queue" && rules.required_pointers.length === 2) {
+          const frontToC = pointers.find(
+            (p) =>
+              p.from === rules.required_pointers[0].from &&
+              p.to === rules.required_pointers[1].to,
+          );
+          if (frontToC) {
+            const foundCase = casesHint.find(
+              (c) => c.condition === "front_to_C",
+            );
+            await updateDetailedProgress(
+              data.id,
+              data.topic,
+              false,
+              data.level,
+            );
+            setShowHint(true);
+            setFeedback({
+              header: "Kamu ada yang miss di bagian pointer nih!",
+              hintMessage: foundCase
+                ? foundCase.ccbh
+                : "Periksa kembali pointer pada elemen front dan pastikan tidak melompati elemen lain!",
+            });
+            setIsVerifying(false);
+            return;
+          }
+        }
+
+        // lost data: if new node inserted in the middle but skip connecting to the old node
+        if (data.topic === "Singly Linked List" && !rules.deleted_nodes) {
+          const foundCase = casesHint.find((c) => c.condition === "lost_data");
+          await updateDetailedProgress(data.id, data.topic, false, data.level);
+          setShowHint(true);
+          setFeedback({
+            header: "Kamu ada yang miss di bagian pointer nih!",
+            hintMessage: foundCase
+              ? foundCase.ccbh
+              : "Periksa kembali pointer sudah terhubung pada node yang benar!",
+          });
+          setIsVerifying(false);
+          return;
+        }
+
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
         setShowHint(true);
         setFeedback({
-          header: "Wah, kamu ada yang miss di bagian pointer nih!",
-          hintMessage: foundCase
-            ? foundCase.ccbh
-            : "Tidak menemukan case-based hint yang cocok. Silahkan cek kembali.",
+          header: "Ada pointer yang kurang nih!",
+          hintMessage:
+            "Pastikan semua pointer terhubung sesuai dengan petunjuk soal!",
         });
         setIsVerifying(false);
         return;
@@ -730,13 +643,13 @@ const NodeLinker = ({
         const foundCase = casesHint.find(
           (c) => c.condition === "incorrect_label_position",
         );
-        await updateDetailedProgress(data.id, data.topic, false);
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
         setShowHint(true);
         setFeedback({
-          header: "Wah, kamu ada yang miss di bagian label nih!",
+          header: "Ada label yang salah posisi nih!",
           hintMessage: foundCase
             ? foundCase.ccbh
-            : "Tidak menemukan case-based hint yang cocok. Silahkan cek kembali.",
+            : "Pastikan setiap label menunjuk pada node yang sesuai dengan struktur!",
         });
         setIsVerifying(false);
         return;

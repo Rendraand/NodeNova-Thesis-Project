@@ -102,17 +102,32 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
         return setIsVerifying(false);
       }
 
-      // Penjelasan CCBH: Memeriksa kondisi spesifik dari input user
-      let condition = "";
-      if (selectedIds.includes("node-A")) condition = "root_selected";
-      else if (selectedIds.includes("node-D") || selectedIds.includes("node-E"))
-        condition = "incomplete_leaves";
+      const incorrectSelection = selectedIds.filter(
+        (id) => !correct_selected_ids.includes(id),
+      );
 
-      await updateDetailedProgress(data.id, data.topic, false);
-      const hint = cases_ccbh?.find((c) => c.condition === condition);
+      if (incorrectSelection.length > 0) {
+        await updateDetailedProgress(data.id, data.topic, false, data.level);
+        const hint = cases_ccbh?.find(
+          (c) =>
+            c.condition === "leaf_selected" ||
+            c.condition === "selected_left_subtree",
+        );
+        setFeedback({
+          header: "Oops! Masih ada yang keliru...",
+          hintMessage: hint
+            ? hint.ccbh
+            : "Coba perhatikan lagi, hirarki pohonnya dan pilih yang sesuai",
+        });
+        setShowHint(true);
+        setIsVerifying(false);
+        return;
+      }
+
+      await updateDetailedProgress(data.id, data.topic, false, data.level);
       setFeedback({
         header: "Oops! Masih ada yang keliru...",
-        hintMessage: hint ? hint.ccbh : data.manual_hint,
+        hintMessage: "Sedikit lagi! Masih ada node yang belum diklik",
       });
       setShowHint(true);
       setIsVerifying(false);
@@ -133,17 +148,21 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
       let condition = "";
       if (selectedIds.length > 0) {
         const firstNodeId = selectedIds[0];
-        const isLeaf = !edges.some((e) => e.from === firstNodeId);
-        if (isLeaf && data.id === "tr-02") condition = "started_from_bottom";
-        if (selectedIds.includes("node-C") && !selectedIds.includes("node-B"))
-          condition = "skipped_left_subtree";
+        if (
+          firstNodeId !== nodes[0].id &&
+          correct_sequence_ids[0] === nodes[0].id
+        )
+          condition = "started_from_leaf";
+        else condition = "wrong_sequence";
       }
 
-      await updateDetailedProgress(data.id, data.topic, false);
+      await updateDetailedProgress(data.id, data.topic, false, data.level);
       const hint = cases_ccbh?.find((c) => c.condition === condition);
       setFeedback({
-        header: "Urutannya masih kurang tepat nih!",
-        hintMessage: hint ? hint.ccbh : data.manual_hint,
+        header: "Oops! Urutannya masih kurang tepat...",
+        hintMessage: hint
+          ? hint.ccbh
+          : "Coba perhatikan lagi, sesuai urutan jenis traversal yang diminta untuk pre-order (Root -> Kiri -> Kanan) maupun untuk in-order (Kiri -> Root -> Kanan).",
       });
       setShowHint(true);
       setIsVerifying(false);
@@ -157,7 +176,7 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
         return setIsVerifying(false);
       }
 
-      await updateDetailedProgress(data.id, data.topic, false);
+      await updateDetailedProgress(data.id, data.topic, false, data.level);
       setFeedback({
         header: "Pasangan angka ini kurang tepat.",
         hintMessage:
@@ -168,10 +187,6 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
       setIsVerifying(false);
     }
   };
-
-  const optionValues = selectedOption
-    ? selectedOption.content.split(" & ")
-    : [];
 
   return (
     <React.Fragment>
@@ -244,11 +259,7 @@ const Trees = ({ setFeedback, setShowHint, setIsComplete, data }) => {
                           isSelected={selectedIds.includes(node.id)}
                           isHole={node.label === "[ ? ]"}
                           holeValue={
-                            node.id === "node-hole-left"
-                              ? optionValues[0]
-                              : node.id === "node-hole-right"
-                                ? optionValues[1]
-                                : null
+                            selectedOption ? selectedOption.content : null
                           }
                           onClick={handleNodeClick}
                         />
