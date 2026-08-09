@@ -13,7 +13,6 @@ const Journey = () => {
   const completedPuzzleQuery = query(
     completePuzzleRef,
     where("user_id", "==", user?.uid),
-    // orderBy("status", "desc"),
     where("status", "==", "completed"),
     orderBy("updated_at", "desc"),
   );

@@ -115,9 +115,9 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
   const { userData } = useAuth();
   const { completedPuzzles, completePuzzle } = useGameProgress();
 
-  const journeyRef = doc(db, "user_journey", `${userData.uid}_${puzzleId}`);
+  const journeyRef = doc(db, "user_journey", `${userData.uid}-${puzzleId}`);
   const [journeyData] = useDocumentData(journeyRef);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const isCompletedInList = completedPuzzles.includes(puzzleId);
   const currentCount = completedPuzzles.length;
