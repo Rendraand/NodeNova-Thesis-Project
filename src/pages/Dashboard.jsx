@@ -817,7 +817,7 @@ const Dashboard = () => {
         </div>
 
         {/* Top Rank Lists */}
-        <div className="w-full max-w-xl bg-white border-2 border-zinc-200 rounded-3xl overflow-hidden flex flex-col">
+        <div className="bg-white border-2 border-zinc-200 rounded-3xl overflow-hidden flex flex-col w-full">
           {/* Header */}
           <div className="flex items-center gap-4 px-6 py-4.5">
             <svg
