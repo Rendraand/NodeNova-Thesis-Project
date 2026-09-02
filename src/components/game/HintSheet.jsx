@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import audioManager from "../../utils/audio";
+// import audioManager from "../../utils/audio";
+import { useAudio } from "../../context/AudioContext";
 
 /**
  * @param {Object} props
@@ -8,9 +9,10 @@ import audioManager from "../../utils/audio";
  * @param {() => void} props.onClose
  */
 const HintSheet = ({ feedback, onClose }) => {
+  const { playSFX } = useAudio();
   useEffect(() => {
-    audioManager.playSFX("wrong");
-  }, []);
+    playSFX("wrong");
+  }, [playSFX]);
 
   return (
     <motion.div
@@ -31,7 +33,7 @@ const HintSheet = ({ feedback, onClose }) => {
 
       <button
         onClick={() => {
-          audioManager.playSFX("pop");
+          playSFX("pop");
           onClose();
         }}
         className="text-white bg-rose-600 border-b-4 border-rose-800 rounded-xl px-7.5 py-2.5 font-bold cursor-pointer active:border-b-0 active:translate-y-1 transition-colors duration-100"

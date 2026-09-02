@@ -266,13 +266,6 @@ const Sidebar = () => {
             <p>Pengaturan</p>
           </NavLink>
         </div>
-
-        {/* <div className="flex flex-col gap-1">
-          <p className="font-medium text-sm text-zinc-500 px-3">
-            Baru diselesaikan
-          </p>
-          <RecentlyCompleted userId={user?.uid} />
-        </div> */}
       </div>
     </div>
   );

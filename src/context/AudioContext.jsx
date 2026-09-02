@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { Howl, Howler } from "howler";
+import audioManager from "../utils/audio";
 
 /**
  * @typedef {Object} AudioContextType
@@ -51,7 +52,8 @@ export function AudioProvider({ children }) {
 
   const changeVolume = (newVolume) => setVolume(newVolume);
   const toggleMute = () => setIsMuted((prev) => !prev);
-  const playSFX = (sfxName) => sfxCache[sfxName]?.play();
+  // const playSFX = (sfxName) => sfxCache[sfxName]?.play();
+  const playSFX = (sfxName) => audioManager.playSFX(sfxName);
 
   return (
     <AudioContext.Provider

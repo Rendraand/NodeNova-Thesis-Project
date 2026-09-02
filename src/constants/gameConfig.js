@@ -1,6 +1,11 @@
 export const GAME_CONFIG = {
   TOTAL_PUZZLES: 14,
-  XP_PER_LEVEL: 100,
+  BASE_EXP: 100,
+  EXP_MULTIPLIER: {
+    LEVEL_1_2: 1,
+    LEVEL_3_4: 1.2,
+    LEVEL_5_PLUS: 1.5,
+  },
 
   TOPICS: {
     LINKED_LIST: {
@@ -20,3 +25,26 @@ export const GAME_CONFIG = {
     },
   },
 };
+
+/**
+ * Menghitung perolehan EXP berdasarkan level/tingkat kesulitan misi:
+ * - Level 1 - 2: BASE_EXP x 1 multiplier (100 EXP)
+ * - Level 3 - 4: BASE_EXP x 1.2 multiplier (120 EXP)
+ * - Level 5 ke atas: BASE_EXP x 1.5 multiplier (150 EXP)
+ *
+ * @param {number|string} level - Level misi dari database
+ * @returns {number} Jumlah EXP yang didapatkan
+ */
+export const calculateExp = (level) => {
+  const parsedLevel = Number(level) || 1;
+  const baseExp = GAME_CONFIG.BASE_EXP;
+
+  if (parsedLevel >= 5) {
+    return Math.round(baseExp * GAME_CONFIG.EXP_MULTIPLIER.LEVEL_5_PLUS);
+  }
+  if (parsedLevel >= 3) {
+    return Math.round(baseExp * GAME_CONFIG.EXP_MULTIPLIER.LEVEL_3_4);
+  }
+  return Math.round(baseExp * GAME_CONFIG.EXP_MULTIPLIER.LEVEL_1_2);
+};
+

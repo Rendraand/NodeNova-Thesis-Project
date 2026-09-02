@@ -8,6 +8,7 @@ import { doc } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import audioManager from "../../utils/audio";
+import { calculateExp } from "../../constants/gameConfig";
 
 const StarParticle = () => {
   return (
@@ -114,6 +115,7 @@ const PlusParticle = () => {
 const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
   const { userData, user } = useAuth();
   const { completedPuzzles, completePuzzle } = useGameProgress();
+  const earnedExp = calculateExp(level);
 
   const journeyRef = doc(db, "user_journey", `${user.uid}-${puzzleId}`);
   const [journeyData] = useDocumentData(journeyRef);
@@ -1097,7 +1099,7 @@ const Success = ({ isNew, totalPuzzles, puzzleId, topic, level }) => {
                   ></path>
                 </g>
               </svg>{" "}
-              +100 Exp
+              +{earnedExp} Exp
               <PlusParticle />
             </motion.div>
           </motion.div>

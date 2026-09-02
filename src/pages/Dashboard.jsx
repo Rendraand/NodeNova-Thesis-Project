@@ -15,6 +15,7 @@ import {
 import { db } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useGameProgress } from "../context/GameProgressContext";
+import { calculateExp } from "../constants/gameConfig";
 
 /**
  * @typedef {Object} CourseData
@@ -188,7 +189,7 @@ const LinkedListMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                     >
                       {completedPuzzles.includes(data.id)
                         ? "Mainkan lagi"
-                        : "Mulai + 100 EXP"}
+                        : `Mulai + ${calculateExp(data.level)} EXP`}
                     </NavLink>
                   </React.Fragment>
                 ) : (
@@ -221,8 +222,8 @@ const LinkedListMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                           className="flex items-center px-6 py-2 bg-primary text-white font-bold w-full justify-center shadow-[0_4px_0_0_#0E8AC8] rounded-xl hover:bg-icy-400 cursor-pointer"
                         >
                           {completedPuzzles.includes(data.id)
-                            ? "Mulai Lagi + 100 EXP"
-                            : "Mulai + 100 EXP"}
+                            ? "Mainkan lagi"
+                            : `Mulai + ${calculateExp(data.level)} EXP`}
                         </NavLink>
                       </React.Fragment>
                     )}
@@ -352,7 +353,7 @@ const StackAndQueueMap = ({
                     >
                       {completedPuzzles.includes(data.id)
                         ? "Mainkan lagi"
-                        : "Mulai + 100 EXP"}
+                        : `Mulai + ${calculateExp(data.level)} EXP`}
                     </NavLink>
                   </React.Fragment>
                 ) : (
@@ -386,7 +387,7 @@ const StackAndQueueMap = ({
                         >
                           {completedPuzzles.includes(data.id)
                             ? "Mainkan Lagi"
-                            : "Mulai + 100 EXP"}
+                            : `Mulai + ${calculateExp(data.level)} EXP`}
                         </NavLink>
                       </React.Fragment>
                     )}
@@ -512,7 +513,7 @@ const BinaryTreeMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                     >
                       {completedPuzzles.includes(data.id)
                         ? "Mainkan lagi"
-                        : "Mulai + 100 EXP"}
+                        : `Mulai + ${calculateExp(data.level)} EXP`}
                     </NavLink>
                   </React.Fragment>
                 ) : (
@@ -546,7 +547,7 @@ const BinaryTreeMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                         >
                           {completedPuzzles.includes(data.id)
                             ? "Mainkan lagi"
-                            : "Mulai + 100 EXP"}
+                            : `Mulai + ${calculateExp(data.level)} EXP`}
                         </NavLink>
                       </React.Fragment>
                     )}
@@ -627,10 +628,10 @@ const renderRankBadge = (rank) => {
  * @returns {import("react").JSX.Element}
  */
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { user, userData, logout } = useAuth();
   const { completedPuzzles } = useGameProgress();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navigate = useNavigate();
   const [leaderboard, setLeaderboard] = useState([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [levelInfoId, setLevelInfoId] = useState("");

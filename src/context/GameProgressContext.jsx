@@ -10,13 +10,14 @@ import {
   increment,
 } from "firebase/firestore";
 import { unlockAchivements } from "../constants/achievements";
+import { calculateExp } from "../constants/gameConfig";
 
 /**
  * @typedef {Object} GameProgressContextType
  * @property {string[]} completedPuzzles - Daftar ID puzzle yang selesai.
- * @property {function(string): Promise<{isNew: boolean}>} savePuzzleProgress - Menyimpan progres puzzle.
- * @property {function(string, string, boolean): Promise<void>} updateDetailedProgress - Mengupdate progres journey detail.
- * @property {function(string, string): Promise<{isNew: boolean}>} completePuzzle - Fungsi terpadu untuk menyelesaikan puzzle.
+ * @property {function(string, string, number|string): Promise<{isNew: boolean}>} savePuzzleProgress - Menyimpan progres puzzle.
+ * @property {function(string, string, boolean, number|string): Promise<void>} updateDetailedProgress - Mengupdate progres journey detail.
+ * @property {function(string, string, number|string): Promise<{isNew: boolean}>} completePuzzle - Fungsi terpadu untuk menyelesaikan puzzle.
  */
 
 const GameProgressContext = createContext(
@@ -34,6 +35,8 @@ export const GameProgressProvider = ({ children }) => {
   /**
    * Menyimpan progres puzzle dan mengupdate kurensi
    * @param {string} puzzleId
+   * @param {string} topic
+   * @param {number|string} level
    * @returns {Promise<{isNew: boolean}>}
    */
   const savePuzzleProgress = useCallback(
@@ -50,9 +53,10 @@ export const GameProgressProvider = ({ children }) => {
 
       // Kita hanya memberi hadiah EXP jika puzzle baru pertama kali diselesaikan
       if (!isAlreadyCompleted) {
+        const earnedExp = calculateExp(level);
         const updates = {
           completed_puzzles: arrayUnion(puzzleId), // Tambah ID tanpa duplikat
-          exp: increment(100), // Atomic increment +100 EXP
+          exp: increment(earnedExp), // Atomic increment berdasarkan tingkat kesulitan misi
         };
 
         if (topic === "Singly Linked List") {
