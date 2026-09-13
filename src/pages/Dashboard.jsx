@@ -106,65 +106,17 @@ const LinkedListMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
           <div
             className={`relative ${(index + 1) % 4 === 2 ? "ms-10" : ""} ${(index + 1) % 4 === 0 ? "me-10" : ""}`}
           >
-            {data.prerequisite_id === "" ? (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLevelInfoId(data.id);
-                }}
-                className="flex items-center px-5 py-4 bg-icy-300 rounded-xl shadow-[0_6px_0_0_#0E8AC8] active:shadow-[0_2px_0_0_#0E8AC8] active:translate-y-1"
-              >
-                <NodePuzzleIcon
-                  isCompleted={completedPuzzles.includes(data.id)}
-                />
-              </button>
-            ) : (
-              <React.Fragment>
-                {completedPuzzles.includes(data.prerequisite_id) ? (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-icy-300 rounded-xl shadow-[0_6px_0_0_#0E8AC8] active:shadow-[0_2px_0_0_#0E8AC8] active:translate-y-1"
-                  >
-                    <NodePuzzleIcon
-                      isCompleted={completedPuzzles.includes(data.id)}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-zinc-200 rounded-xl shadow-[0_6px_0_0_#A1A1AA]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      id="Padlock-Square-1--Streamline-Core"
-                      height="24"
-                      width="24"
-                    >
-                      <desc>
-                        Padlock Square 1 Streamline Icon:
-                        https://streamlinehq.com
-                      </desc>
-                      <g id="padlock-square-1--combination-combo-lock-locked-padlock-secure-security-shield-keyhole">
-                        <path
-                          id="Subtract"
-                          fill="#a1a1aa"
-                          fill-rule="evenodd"
-                          d="M12 3.4285714285714284a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 3.4285714285714284v1.7142857142857142h6.857142857142857V6.857142857142857a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 -3.4285714285714284ZM5.142857142857142 6.857142857142857v1.7142857142857142a2.571428571428571 2.571428571428571 0 0 0 -2.571428571428571 2.571428571428571v10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 5.142857142857142 24h13.714285714285714a2.571428571428571 2.571428571428571 0 0 0 2.571428571428571 -2.571428571428571v-10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 18.857142857142858 8.571428571428571V6.857142857142857a6.857142857142857 6.857142857142857 0 1 0 -13.714285714285714 0Zm6.857142857142857 11.571428571428571a2.142857142857143 2.142857142857143 0 1 0 0 -4.285714285714286 2.142857142857143 2.142857142857143 0 0 0 0 4.285714285714286Z"
-                          clip-rule="evenodd"
-                          stroke-width="1.7143"
-                        ></path>
-                      </g>
-                    </svg>
-                  </button>
-                )}
-              </React.Fragment>
-            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLevelInfoId(data.id);
+              }}
+              className="flex items-center px-5 py-4 bg-icy-300 rounded-xl shadow-[0_6px_0_0_#0E8AC8] active:shadow-[0_2px_0_0_#0E8AC8] active:translate-y-1"
+            >
+              <NodePuzzleIcon
+                isCompleted={completedPuzzles.includes(data.id)}
+              />
+            </button>
 
             {/* Modal Level Info */}
             {levelInfoId === data.id && (
@@ -172,63 +124,21 @@ const LinkedListMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                 id={`card-${data.id}`}
                 className="absolute top-8 left-24 p-4 border-2 border-zinc-200 rounded-xl bg-white w-xs z-10"
               >
-                {data.prerequisite_id === "" ? (
-                  <React.Fragment>
-                    <h3 className="font-semibold text-lg">
-                      Level {data.level} - {data.topic}
-                    </h3>
-                    <p className="text-primary font-semibold">
-                      {data.variation}
-                    </p>
-                    <p className="text-zinc-500 t font-medium mb-3">
-                      {data.description}
-                    </p>
-                    <NavLink
-                      to={`/linked-list/puzzles/${data.id}`}
-                      className="flex items-center px-6 py-2 bg-primary text-white font-bold w-full justify-center shadow-[0_4px_0_0_#0E8AC8] rounded-xl hover:bg-icy-400 cursor-pointer"
-                    >
-                      {completedPuzzles.includes(data.id)
-                        ? "Mainkan lagi"
-                        : `Mulai + ${calculateExp(data.level)} EXP`}
-                    </NavLink>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {!completedPuzzles.includes(data.prerequisite_id) ? (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg text-zinc-600 mb-2">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-zinc-400 font-medium mb-3">
-                          Selesaikan misi sebelumnya untuk membuka
-                        </p>
-                        <div className="flex items-center px-6 py-2 bg-zinc-200 text-zinc-400 font-bold w-full justify-center rounded-xl cursor-default">
-                          Terkunci
-                        </div>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-primary font-semibold">
-                          {data.variation}
-                        </p>
-                        <p className="text-zinc-500 t font-medium mb-3">
-                          {data.description}
-                        </p>
-                        <NavLink
-                          to={`/linked-list/puzzles/${data.id}`}
-                          className="flex items-center px-6 py-2 bg-primary text-white font-bold w-full justify-center shadow-[0_4px_0_0_#0E8AC8] rounded-xl hover:bg-icy-400 cursor-pointer"
-                        >
-                          {completedPuzzles.includes(data.id)
-                            ? "Mainkan lagi"
-                            : `Mulai + ${calculateExp(data.level)} EXP`}
-                        </NavLink>
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                )}
+                <h3 className="font-semibold text-lg">
+                  Level {data.level} - {data.topic}
+                </h3>
+                <p className="text-primary font-semibold">{data.variation}</p>
+                <p className="text-zinc-500 t font-medium mb-3">
+                  {data.description}
+                </p>
+                <NavLink
+                  to={`/linked-list/puzzles/${data.id}`}
+                  className="flex items-center px-6 py-2 bg-primary text-white font-bold w-full justify-center shadow-[0_4px_0_0_#0E8AC8] rounded-xl hover:bg-icy-400 cursor-pointer"
+                >
+                  {completedPuzzles.includes(data.id)
+                    ? "Mainkan lagi"
+                    : `Mulai + ${calculateExp(data.level)} EXP`}
+                </NavLink>
               </div>
             )}
           </div>
@@ -270,65 +180,17 @@ const StackAndQueueMap = ({
           <div
             className={`relative ${(index + 1) % 4 === 2 ? "ms-10" : ""} ${(index + 1) % 4 === 0 ? "me-10" : ""}`}
           >
-            {data.prerequisite_id === "" ? (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLevelInfoId(data.id);
-                }}
-                className="flex items-center px-5 py-4 bg-mauve-purple-300 rounded-xl shadow-[0_6px_0_0_#A937EB] active:shadow-[0_2px_0_0_#A937EB] active:translate-y-1"
-              >
-                <NodePuzzleIcon
-                  isCompleted={completedPuzzles.includes(data.id)}
-                />
-              </button>
-            ) : (
-              <React.Fragment>
-                {completedPuzzles.includes(data.prerequisite_id) ? (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-mauve-purple-300 rounded-xl shadow-[0_6px_0_0_#A937EB] active:shadow-[0_2px_0_0_#A937EB] active:translate-y-1"
-                  >
-                    <NodePuzzleIcon
-                      isCompleted={completedPuzzles.includes(data.id)}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-zinc-200 rounded-xl shadow-[0_6px_0_0_#A1A1AA]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      id="Padlock-Square-1--Streamline-Core"
-                      height="24"
-                      width="24"
-                    >
-                      <desc>
-                        Padlock Square 1 Streamline Icon:
-                        https://streamlinehq.com
-                      </desc>
-                      <g id="padlock-square-1--combination-combo-lock-locked-padlock-secure-security-shield-keyhole">
-                        <path
-                          id="Subtract"
-                          fill="#a1a1aa"
-                          fill-rule="evenodd"
-                          d="M12 3.4285714285714284a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 3.4285714285714284v1.7142857142857142h6.857142857142857V6.857142857142857a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 -3.4285714285714284ZM5.142857142857142 6.857142857142857v1.7142857142857142a2.571428571428571 2.571428571428571 0 0 0 -2.571428571428571 2.571428571428571v10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 5.142857142857142 24h13.714285714285714a2.571428571428571 2.571428571428571 0 0 0 2.571428571428571 -2.571428571428571v-10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 18.857142857142858 8.571428571428571V6.857142857142857a6.857142857142857 6.857142857142857 0 1 0 -13.714285714285714 0Zm6.857142857142857 11.571428571428571a2.142857142857143 2.142857142857143 0 1 0 0 -4.285714285714286 2.142857142857143 2.142857142857143 0 0 0 0 4.285714285714286Z"
-                          clip-rule="evenodd"
-                          stroke-width="1.7143"
-                        ></path>
-                      </g>
-                    </svg>
-                  </button>
-                )}
-              </React.Fragment>
-            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLevelInfoId(data.id);
+              }}
+              className="flex items-center px-5 py-4 bg-mauve-purple-300 rounded-xl shadow-[0_6px_0_0_#A937EB] active:shadow-[0_2px_0_0_#A937EB] active:translate-y-1"
+            >
+              <NodePuzzleIcon
+                isCompleted={completedPuzzles.includes(data.id)}
+              />
+            </button>
 
             {/* Modal Level Info */}
             {levelInfoId === data.id && (
@@ -336,63 +198,23 @@ const StackAndQueueMap = ({
                 id={`card-${data.id}`}
                 className="absolute top-8 left-24 p-4 border-2 border-zinc-200 rounded-xl bg-white w-xs z-10"
               >
-                {data.prerequisite_id === "" ? (
-                  <React.Fragment>
-                    <h3 className="font-semibold text-lg">
-                      Level {data.level} - {data.topic}
-                    </h3>
-                    <p className="text-mauve-purple-500 font-semibold">
-                      {data.variation}
-                    </p>
-                    <p className="text-zinc-500 t font-medium mb-3">
-                      {data.description}
-                    </p>
-                    <NavLink
-                      to={`/stack-and-queue/puzzles/${data.id}`}
-                      className="flex items-center px-6 py-2 bg-mauve-purple-400 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#9216DA] rounded-lg hover:bg-mauve-purple-400/90 cursor-pointer active:shadow-none active:translate-y-1"
-                    >
-                      {completedPuzzles.includes(data.id)
-                        ? "Mainkan lagi"
-                        : `Mulai + ${calculateExp(data.level)} EXP`}
-                    </NavLink>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {!completedPuzzles.includes(data.prerequisite_id) ? (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg text-zinc-600 mb-2">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-zinc-400 font-medium mb-3">
-                          Selesaikan misi sebelumnya untuk membuka
-                        </p>
-                        <div className="flex items-center px-6 py-2 bg-zinc-200 text-zinc-400 font-bold w-full justify-center rounded-xl cursor-default">
-                          Terkunci
-                        </div>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-mauve-purple-500 font-semibold">
-                          {data.variation}
-                        </p>
-                        <p className="text-zinc-500 t font-medium mb-3">
-                          {data.description}
-                        </p>
-                        <NavLink
-                          to={`/stack-and-queue/puzzles/${data.id}`}
-                          className="flex items-center px-6 py-2 bg-mauve-purple-400 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#9216DA] rounded-xl hover:bg-mauve-purple-400/90 cursor-pointer"
-                        >
-                          {completedPuzzles.includes(data.id)
-                            ? "Mainkan Lagi"
-                            : `Mulai + ${calculateExp(data.level)} EXP`}
-                        </NavLink>
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                )}
+                <h3 className="font-semibold text-lg">
+                  Level {data.level} - {data.topic}
+                </h3>
+                <p className="text-mauve-purple-500 font-semibold">
+                  {data.variation}
+                </p>
+                <p className="text-zinc-500 t font-medium mb-3">
+                  {data.description}
+                </p>
+                <NavLink
+                  to={`/stack-and-queue/puzzles/${data.id}`}
+                  className="flex items-center px-6 py-2 bg-mauve-purple-400 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#9216DA] rounded-lg hover:bg-mauve-purple-400/90 cursor-pointer active:shadow-none active:translate-y-1"
+                >
+                  {completedPuzzles.includes(data.id)
+                    ? "Mainkan lagi"
+                    : `Mulai + ${calculateExp(data.level)} EXP`}
+                </NavLink>
               </div>
             )}
           </div>
@@ -430,65 +252,17 @@ const BinaryTreeMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
           <div
             className={`relative ${(index + 1) % 4 === 2 ? "ms-10" : ""} ${(index + 1) % 4 === 0 ? "me-10" : ""}`}
           >
-            {data.prerequisite_id === "" ? (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLevelInfoId(data.id);
-                }}
-                className="flex items-center px-5 py-4 bg-mint-400 rounded-xl shadow-[0_6px_0_0_#26A155] active:shadow-[0_2px_0_0_#26A155] active:translate-y-1"
-              >
-                <NodePuzzleIcon
-                  isCompleted={completedPuzzles.includes(data.id)}
-                />
-              </button>
-            ) : (
-              <React.Fragment>
-                {completedPuzzles.includes(data.prerequisite_id) ? (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-mint-400 rounded-xl shadow-[0_6px_0_0_#26A155] active:shadow-[0_2px_0_0_#26A155] active:translate-y-1"
-                  >
-                    <NodePuzzleIcon
-                      isCompleted={completedPuzzles.includes(data.id)}
-                    />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setLevelInfoId(data.id);
-                    }}
-                    className="flex items-center px-5 py-4 bg-zinc-200 rounded-xl shadow-[0_6px_0_0_#A1A1AA]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      id="Padlock-Square-1--Streamline-Core"
-                      height="24"
-                      width="24"
-                    >
-                      <desc>
-                        Padlock Square 1 Streamline Icon:
-                        https://streamlinehq.com
-                      </desc>
-                      <g id="padlock-square-1--combination-combo-lock-locked-padlock-secure-security-shield-keyhole">
-                        <path
-                          id="Subtract"
-                          fill="#a1a1aa"
-                          fill-rule="evenodd"
-                          d="M12 3.4285714285714284a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 3.4285714285714284v1.7142857142857142h6.857142857142857V6.857142857142857a3.4285714285714284 3.4285714285714284 0 0 0 -3.4285714285714284 -3.4285714285714284ZM5.142857142857142 6.857142857142857v1.7142857142857142a2.571428571428571 2.571428571428571 0 0 0 -2.571428571428571 2.571428571428571v10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 5.142857142857142 24h13.714285714285714a2.571428571428571 2.571428571428571 0 0 0 2.571428571428571 -2.571428571428571v-10.285714285714285A2.571428571428571 2.571428571428571 0 0 0 18.857142857142858 8.571428571428571V6.857142857142857a6.857142857142857 6.857142857142857 0 1 0 -13.714285714285714 0Zm6.857142857142857 11.571428571428571a2.142857142857143 2.142857142857143 0 1 0 0 -4.285714285714286 2.142857142857143 2.142857142857143 0 0 0 0 4.285714285714286Z"
-                          clip-rule="evenodd"
-                          stroke-width="1.7143"
-                        ></path>
-                      </g>
-                    </svg>
-                  </button>
-                )}
-              </React.Fragment>
-            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLevelInfoId(data.id);
+              }}
+              className="flex items-center px-5 py-4 bg-mint-400 rounded-xl shadow-[0_6px_0_0_#26A155] active:shadow-[0_2px_0_0_#26A155] active:translate-y-1"
+            >
+              <NodePuzzleIcon
+                isCompleted={completedPuzzles.includes(data.id)}
+              />
+            </button>
 
             {/* Modal Level Info */}
             {levelInfoId === data.id && (
@@ -496,63 +270,23 @@ const BinaryTreeMap = ({ completedPuzzles, levelInfoId, setLevelInfoId }) => {
                 id={`card-${data.id}`}
                 className="absolute top-8 left-24 p-4 border-2 border-zinc-200 rounded-xl bg-white w-xs z-10"
               >
-                {data.prerequisite_id === "" ? (
-                  <React.Fragment>
-                    <h3 className="font-semibold text-lg">
-                      Level {data.level} - {data.topic}
-                    </h3>
-                    <p className="text-mint-600 font-semibold">
-                      {data.sub_category}
-                    </p>
-                    <p className="text-zinc-500 t font-medium mb-3">
-                      {data.description}
-                    </p>
-                    <NavLink
-                      to={`/binary-tree/puzzles/${data.id}`}
-                      className="flex items-center px-6 py-2 bg-mint-500 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#1C783F] rounded-lg hover:bg-mint-500/90 cursor-pointer active:shadow-none active:translate-y-1"
-                    >
-                      {completedPuzzles.includes(data.id)
-                        ? "Mainkan lagi"
-                        : `Mulai + ${calculateExp(data.level)} EXP`}
-                    </NavLink>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {!completedPuzzles.includes(data.prerequisite_id) ? (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg text-zinc-600 mb-2">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-zinc-400 font-medium mb-3">
-                          Selesaikan misi sebelumnya untuk membuka
-                        </p>
-                        <div className="flex items-center px-6 py-2 bg-zinc-200 text-zinc-400 font-bold w-full justify-center rounded-xl cursor-default">
-                          Terkunci
-                        </div>
-                      </React.Fragment>
-                    ) : (
-                      <React.Fragment>
-                        <h3 className="font-semibold text-lg">
-                          Level {data.level} - {data.topic}
-                        </h3>
-                        <p className="text-mint-600 font-semibold">
-                          {data.sub_category}
-                        </p>
-                        <p className="text-zinc-500 font-medium mb-3">
-                          {data.description}
-                        </p>
-                        <NavLink
-                          to={`/linked-list/puzzles/${data.id}`}
-                          className="flex items-center px-6 py-2 bg-mint-500 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#1C783F] rounded-lg hover:bg-mint-500/90 cursor-pointer active:shadow-none active:translate-y-1"
-                        >
-                          {completedPuzzles.includes(data.id)
-                            ? "Mainkan lagi"
-                            : `Mulai + ${calculateExp(data.level)} EXP`}
-                        </NavLink>
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                )}
+                <h3 className="font-semibold text-lg">
+                  Level {data.level} - {data.topic}
+                </h3>
+                <p className="text-mint-600 font-semibold">
+                  {data.sub_category}
+                </p>
+                <p className="text-zinc-500 t font-medium mb-3">
+                  {data.description}
+                </p>
+                <NavLink
+                  to={`/binary-tree/puzzles/${data.id}`}
+                  className="flex items-center px-6 py-2 bg-mint-500 text-white font-bold w-full justify-center shadow-[0_4px_0_0_#1C783F] rounded-lg hover:bg-mint-500/90 cursor-pointer active:shadow-none active:translate-y-1"
+                >
+                  {completedPuzzles.includes(data.id)
+                    ? "Mainkan lagi"
+                    : `Mulai + ${calculateExp(data.level)} EXP`}
+                </NavLink>
               </div>
             )}
           </div>

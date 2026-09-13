@@ -1,5 +1,6 @@
 import { ArcherContainer, ArcherElement } from "react-archer";
 import treesJson from "./data/trees.json";
+import Journey from "./pages/Journey";
 
 const Test = () => {
   const getTrees = treesJson.find((item) => item.id === "tr-04");

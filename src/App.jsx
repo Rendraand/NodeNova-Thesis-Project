@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { GameProgressProvider } from "./context/GameProgressContext";
+import { AudioProvider } from "./context/AudioContext";
 
 import Dashboard from "./pages/Dashboard";
 import Gameplay from "./pages/Gameplay";
@@ -12,29 +13,13 @@ import Leaderboard from "./pages/Leaderboard";
 import Achievements from "./pages/Achievements";
 
 import "./styles/main.css";
-import { AudioProvider } from "./context/AudioContext";
-import { useParams } from "react-router";
-import { doc } from "firebase/firestore";
-import { db } from "./services/firebase";
-import { useDocumentData } from "react-firebase-hooks/firestore";
 
 const ProtectedRoute = ({ children }) => {
-  const { id } = useParams();
-  const { user, userData, loading } = useAuth();
+  const { user, loading } = useAuth();
 
-  const puzzleRef = doc(db, "puzzles", id || "unknown");
+  if (loading) return null;
 
-  const [puzzleData, loadingPuzzle] = useDocumentData(puzzleRef);
-
-  if (loading || loadingPuzzle) return null;
-
-  return user &&
-    (!puzzleData?.prerequisite_id ||
-      userData?.completed_puzzles.includes(puzzleData?.prerequisite_id)) ? (
-    children
-  ) : (
-    <Navigate to="/dashboard" replace />
-  );
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 const router = createBrowserRouter([

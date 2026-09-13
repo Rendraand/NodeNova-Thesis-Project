@@ -3,8 +3,8 @@ export const GAME_CONFIG = {
   BASE_EXP: 100,
   EXP_MULTIPLIER: {
     LEVEL_1_2: 1,
-    LEVEL_3_4: 1.2,
-    LEVEL_5_PLUS: 1.5,
+    LEVEL_3_4: 2,
+    LEVEL_5_PLUS: 3,
   },
 
   TOPICS: {
@@ -47,4 +47,3 @@ export const calculateExp = (level) => {
   }
   return Math.round(baseExp * GAME_CONFIG.EXP_MULTIPLIER.LEVEL_1_2);
 };
-
